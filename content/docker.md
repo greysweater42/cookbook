@@ -147,3 +147,13 @@ More commands are available at [Dockerfile reference](https://docs.docker.com/en
 * fast layering python dependencies [link](https://jpetazzo.github.io/2013/12/01/docker-python-pip-requirements/)
 
 * passing passwords to docker (TODO) - with environment variables and volume
+
+* `docker logs`, `docker inspect` and retrieving info from dict
+
+* docker-compose (maybe there should be a separate article on this subject)
+
+* `docker stats`
+
+* `docker system df`
+
+* lazydoocker: [github](https://github.com/jesseduffield/lazydocker), [tutorial](https://www.youtube.com/watch?v=NICqQPxwJWw)

@@ -102,3 +102,5 @@ Let's face the truth, after a long period of working on a project, dozens of bra
 * git revert (TODO)
 
 * [GitFlow (branching strategies)](https://gitversion.readthedocs.io/en/latest/git-branching-strategies/gitflow/) (TODO)
+
+* reset, solving conflicts (which tools), interactive rebasing, cherrypicking, rebase, stash, submodules
