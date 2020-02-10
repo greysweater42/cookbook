@@ -110,4 +110,4 @@ Let's face the truth, after a long period of working on a project, dozens of bra
 
 * [GitFlow (branching strategies)](https://gitversion.readthedocs.io/en/latest/git-branching-strategies/gitflow/) (TODO)
 
-* reset, solving conflicts (which tools), interactive rebasing, cherrypicking, rebase, stash, submodules
+* [interactive rebase](https://www.internalpointers.com/post/squash-commits-into-one-git)
