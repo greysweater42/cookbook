@@ -81,21 +81,28 @@ git push origin -\-delete <branch_name>
 
 Let's face the truth, after a long period of working on a project, dozens of branches appear and the repo is a complete mess. There are a few commands though, which make cleaning things up easier:
 
-* `git log --follow --oneline content/git.md` - **--follow** shows log of the changes made on this particular file. **--oneline** show only a few first characters of SHA and commit message.
+* `log`
 
-* `git log --name-only --oneline` - **--name-only** shows only names of the files that were changed. Works also with git diff:
+    * `git log --follow --oneline content/git.md` - **--follow** shows log of the changes made on this particular file. **--oneline** show only a few first characters of SHA and commit message.
 
-* `git diff --name-only HEAD~2`
+    * `git log --name-only --oneline` - **--name-only** shows only names of the files that were changed. Works also with git diff:
 
-* `git log --decorate` **--decorate** prints the names of all the pointers (HEAD, branches and tags) near commits SHAs. You can also use `gitk --all`. If you're not using gitka, start using it. It's good.
+    * `git diff --name-only HEAD~2`
 
-* `git log --graph` - **--graph** draws commits in a form of a graph/tree.
+    * `git log --decorate` **--decorate** prints the names of all the pointers (HEAD, branches and tags) near commits SHAs. You can also use `gitk --all`. If you're not using gitka, start using it. It's good.
 
-* `git log --all` - **--all** shows all commits, not only those on a branch you are on right now.
+    * `git log --graph` - **--graph** draws commits in a form of a graph/tree.
 
-* to summarise: `git log --oneline --decorate --all --graph`
+    * `git log --all` - **--all** shows all commits, not only those on a branch you are on right now.
 
-* `git checkout master; git merge develop` - **merge** branches when you are on a target branch. Seems obvious, but once I started working with rebasing and making merge requests on remote repo, I get a little confused sometimes.
+    * to summarise: `git log --oneline --decorate --all --graph`
+
+* `merge` - `git checkout master; git merge develop` - **merge** branches when you are on a target branch. Seems obvious, but once I started working with rebasing and making merge requests on remote repo, I get a little confused sometimes.
+
+* `reflog` - shows the history of everything you were doing with git in this repo: every commit, checkout, push, pull etc. Useful when you want to move back to the previous SHA you were in, before doinng checkout (*what was the name of that branch I checkout out from into master?*). Resembles `cd -` in bash.
+
+* `stash` - can't believe I haven't mentioned *stash* by now. You can run `git stash` when you have unstaged changes in your repo, and they will be saved to a safe place until you reopen them with `git stash apply` anytime, maybe even on a different branch.
+
 
 ## 6. Subjects still to cover:
 

@@ -140,6 +140,8 @@ More commands are available at [Dockerfile reference](https://docs.docker.com/en
 
 * [Dockerfile best practises](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
+* [portainer](https://www.portainer.io/) - a nice GUI for inspecting docker containers and images
+
 ## 5. Subjects still to cover 
 
 * docker create volume (TODO)
