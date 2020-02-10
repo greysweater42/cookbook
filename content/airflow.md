@@ -108,3 +108,5 @@ first_task = BashOperator(
 [another good tutorial](https://airflow.apache.org/tutorial.html)
 
 Airflow's purpose is rather straightforward, so the best way to learn it is learning-by-doing.
+
+[deployig with airflow and containers](https://towardsdatascience.com/how-to-use-airflow-without-headaches-4e6e37e6c2bc)
