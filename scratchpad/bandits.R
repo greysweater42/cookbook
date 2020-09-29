@@ -28,4 +28,12 @@ epsilon_greedy <- function(probs = c(0.1, 0.2, 0.3),
   matplot(scores, type = "l", lty = 1)
 }
 
-epsilon_greedy(epsilon = 0.3)
+# epsilon_greedy(epsilon = 0.3)
+print(10)
+
+a <- data.frame(a=1:10, b=1:10)
+a
+
+print(230)
+
+plot(1:10)
