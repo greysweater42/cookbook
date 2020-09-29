@@ -1,4 +1,4 @@
-baseURL = "http://tomis9.com"
+baseURL = "http://greysweater42.github.io"
 # baseURL                    = ""
 builddrafts                = false
 canonifyurls               = true
@@ -7,7 +7,7 @@ layoutdir                  = "layouts"
 publishdir                 = "public"
 preserveTaxonomyNames = true
 theme                      = "random_forest"
-title                      = "tomis9's cookbook"
+title                      = "greaysweater42's cookbook"
 
 [taxonomies]
   tag                      = "tags"
@@ -59,6 +59,7 @@ title                      = "tomis9's cookbook"
     url                    = "categories/scratchpad/"  
 
 [params]
-  title = "tomis9's cookbook"
-  description              = "data science tutorials and snippets prepared by tomis9"
+  header = "grey <span style='position: relative; top: -10px;'> sweater</span> 42's</br>cookbook"
+  title = "greysweater42's cookbook"
+  description              = "data science tutorials and snippets prepared by greysweater42"
   # faviconfile              = "favicon.ico"

@@ -8,21 +8,17 @@ branches:
     - master
 
 before_install:
-  - docker pull tomis9/cookbook:0.9
-  - docker run -v /home/travis/build/tomis9/cookbook:/cookbook tomis9/cookbook:0.9
+  - docker pull tomis9/cookbook:0.10
+  - docker run -v /home/travis/build/greysweater42/cookbook:/cookbook tomis9/cookbook:0.10
 
 deploy:
-  provider: s3
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
-  bucket: tomis9.com
-  region: eu-central-1
   local_dir: public
-  repo: tomis9/tomis9.github.io 
+  provider: pages
+  repo: greysweater42/greysweater42.github.io 
   target_branch: master 
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  email: tomis9@buziaczek.pl
-  name: tomis9
+  email: greysweater42@gmail.com
+  name: greysweater42
   on:
     branch: master
