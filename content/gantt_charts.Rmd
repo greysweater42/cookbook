@@ -1,0 +1,79 @@
+---
+title: "gantt charts"
+date: 2020-09-27T10:52:51+02:00
+draft: false
+---
+
+# 1. Introduction
+
+
+[Gantt charts](https://en.wikipedia.org/wiki/Gantt_chart) are used not only in management, but are a useful tool to show event changes in time.
+
+The most popular python plotting packages are [plotly](https://plotly.com/) and [matplotlib](https://matplotlib.org/) and both of them support creating gantt charts.
+
+Curiously, Gantt's chart was invented used by Karol Adamiecki, however it was Henry Gantt who first presented it, well, in English ([link](https://en.wikipedia.org/wiki/Karol_Adamiecki)).
+
+
+# 2. Examples
+
+* *plotly*
+
+>code from [plotly documentation](https://plotly.com/python/gantt/) - see useful links
+
+```{python, engine.path = '/usr/bin/python3'}
+import plotly.express as px
+import pandas as pd
+
+df = pd.DataFrame([
+    dict(Task="Job A", Start='2009-01-01', Finish='2009-02-28'),
+    dict(Task="Job B", Start='2009-03-05', Finish='2009-04-15'),
+    dict(Task="Job C", Start='2009-02-20', Finish='2009-05-30')
+])
+
+fig = px.timeline(df, x_start="Start", x_end="Finish", y="Task")
+fig.update_yaxes(autorange="reversed") # otherwise tasks are listed from the bottom up
+fig.show()
+```
+
+* *matplotlib*
+
+>code from [this article](https://towardsdatascience.com/from-the-bridge-to-tasks-planning-build-gannt-chart-in-python-r-and-tableau-7256fb7615f8) - see useful links
+
+```{python, engine.path = '/usr/bin/python3'}
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+# Formatters for x-axis labels
+months = mdates.MonthLocator()  # every month
+date_fmt = mdates.DateFormatter('%Y-%m-%d')
+# Create duration column for bars sizes
+tasks_data_plt['start.date'] = pd.to_datetime(tasks_data_plt['start.date'])
+tasks_data_plt['end.date'] = pd.to_datetime(tasks_data_plt['end.date'])
+tasks_data_plt['duration'] = tasks_data_plt['end.date'] - tasks_data_plt['start.date']
+# Preperation to have locations of the bars on the y-axis
+tasks = {task : (i+1)*10 for i, task in enumerate( dict.fromkeys(tasks_data['name']) )}
+# Override pandas mandatory conversion to Timestamp
+start_times = [np.datetime64(t, 'D') for t in tasks_data_plt['start.date'] ]
+
+fig, ax_gnt = plt.subplots(figsize = (12, 8))
+# Add bars for each duration
+for i, t in enumerate(tasks_data_plt['name']):
+    ax_gnt.broken_barh([(start_times[i], tasks_data_plt['duration'][i])], (tasks[t], 9),
+                        facecolors = ('tab:red') if tasks_data_plt['is.critical'][i] else ('tab:grey')) 
+  
+ax_gnt.grid(True)
+
+ax_gnt.set_yticks([i + 5 for i in tasks.values()]) 
+ax_gnt.set_yticklabels(dict.fromkeys(tasks_data['name']).keys()) 
+# Format the x-axis
+ax_gnt.xaxis_date()
+ax_gnt.xaxis.set_major_locator(months)
+ax_gnt.xaxis.set_major_formatter(date_fmt)
+fig.autofmt_xdate()
+```
+
+
+# 3. Useful links
+
+* [gantt charts in plotly](https://plotly.com/python/gantt/)
+
+* [gantt charts in matplotlib](https://towardsdatascience.com/from-the-bridge-to-tasks-planning-build-gannt-chart-in-python-r-and-tableau-7256fb7615f8)
