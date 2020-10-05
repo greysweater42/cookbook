@@ -1,4 +1,4 @@
-baseURL = "http://greysweater42.github.io"
+baseURL = "https://greysweater42.github.io"
 # baseURL                    = ""
 builddrafts                = false
 canonifyurls               = true
