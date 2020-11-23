@@ -8,24 +8,29 @@ sudo apt-get install curl -y
 sudo apt-get install apt-transport-https -y
 sudo apt-get install git -y
 
-echo export LC_CTYPE=en_US.UTF-8 >> .bashrc
-echo export LC_ALL=en_US.UTF-8 >> .bashrc
-source .bashrc
- 
+# echo export LC_CTYPE=en_US.UTF-8 >> .bashrc
+# echo export LC_ALL=en_US.UTF-8 >> .bashrc
+# source .bashrc
+
 echo "imap jk <Esc>" > .vimrc
 
 # java
-sudo apt-get update
-sudo apt-get -y install software-properties-common
+sudo apt update
+sudo apt install openjdk-8-jdk openjdk-8-jre -y
 
-echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/java-8-debian.list
-echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/java-8-debian.list
 
-echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EEA14886
-sudo apt-get update
-sudo apt-get -y install oracle-java8-installer
+# sudo apt-get update
+# sudo apt-get -y install software-properties-common
+
+# echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/java-8-debian.list
+# echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/java-8-debian.list
+
+# echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+# echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EEA14886
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
+# sudo apt-get update
+# sudo apt-get -y install oracle-java8-installer
 
 # elasticsearch
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
@@ -33,7 +38,7 @@ echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee 
 sudo apt-key update  # fixes weird error with 'authenication'
 sudo apt-get update && sudo apt-get install -y elasticsearch 
 # 
-# # before running elasticsearch, check if vm has more than 4GB of RAM (manually in virtualbox)
+# # if run in VM, before running elasticsearch, check if vm has more than 4GB of RAM (manually in virtualbox)
 # 
 sudo update-rc.d elasticsearch defaults 95 10
 sudo -i service elasticsearch start 
@@ -44,11 +49,13 @@ sudo -i service elasticsearch start
 # in order to use elasticsearch via vm, configure:
 echo "network.bind_host: 0" | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 echo "network.host: 0.0.0.0" | sudo tee -a /etc/elasticsearch/elasticsearch.yml
+echo "http.port: 8881" | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 
 echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
 sudo apt-get update && sudo apt-get install kibana -y
 
 echo "server.host: 0.0.0.0" | sudo tee -a /etc/kibana/kibana.yml
+echo "server.port: 8882" | sudo tee -a /etc/kibana/kibana.yml
 
 sudo update-rc.d kibana defaults 95 10
 sudo -i service kibana start 
@@ -87,3 +94,12 @@ sudo service logstash start
 # 
 # # No delay for escape key press
 # set -sg escape-time 0
+
+# https://logz.io/blog/securing-elk-nginx/
+sudo apt-get install nginx -y
+sudo apt-get install apache2-utils -y
+
+sudo htpasswd -c /etc/nginx/htpasswd.users kibanauser
+
+JaszczompLeciGurom
+JaszczompLeciGurom
