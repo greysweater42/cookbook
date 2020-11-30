@@ -94,7 +94,7 @@ There are many objects you can iterate over. You will find a pretty exhaustive l
 ```
 for i in 1 2 3 4 5
 do
-   echo i
+   echo $i
 done
 ```
 

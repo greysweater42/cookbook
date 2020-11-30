@@ -71,4 +71,25 @@ plotly::as_widget(
 
 OK, it looks like I got some data.
 
+## 3. Model type
+
+At first I was thinking that LSTM would be perfect, as it is widely used for time series data prediction. However it does not seem to be able to model/predict (I am used to saying 'model' as in economics/econometrics, even though in machine learning we rather 'fit' functions to the data) dependencies between different companies. As a result, I will try to implement a convolutional neural network as a super-flexible function which will fit nicely to my data.
+
+But first I need:
+
+* more data, preferably on ~10 different companies, from the same market segment (for a start)
+
+* ideas on how to create a sensible dataset from them. Throwing them into a neural network without any consideration would clearly not work, which would result in no $$$ and in me being sad.
+
+"More data" point is as simple changing "MSFT" into some other stock, but creating a valid dataset? For now I assume that:
+
+* stock fluctuations in the same market segment *are* positively correlated *but* there might have been some unusual events where the tendency was *negative*, e.g. Apple's stocks went down, while the rest went up. These are the scenarios I am particularly interested in.
+
+* I should keep in mind that in order to outsmart other players on the market, I must learn their weaknesses, and the strategy above does not seem to take advantage of any of them... but it's still something for a start.
+
+
+More data!
+
+
+
 *To be continued...*
