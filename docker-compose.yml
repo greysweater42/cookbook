@@ -1,0 +1,9 @@
+version: "3.4"
+
+services:
+    cookbook:
+        container_name: cookbook 
+        image: ghcr.io/greysweater42/cookbook:latest
+        build:
+            context: .
+            dockerfile: Dockerfile
