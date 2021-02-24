@@ -19,5 +19,5 @@ jobs:
           git config --global user.name "auto"
           git clone https://github.com/greysweater42/cookbook
           cd cookbook
-          Rscript -e "options(blogdown.hugo.dir='/root/bin/hugo'); blogdown::build_site()"
+          Rscript -e "blogdown::build_site()"
 

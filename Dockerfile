@@ -26,7 +26,8 @@ RUN Rscript installer.R
 
 RUN Rscript -e 'devtools::install_github("greysweater42/decisionTree")'
 RUN Rscript -e 'devtools::install_github("vqv/ggbiplot")'
-RUN Rscript -e "blogdown::install_hugo(version = '0.52')"
+# RUN Rscript -e "blogdown::install_hugo(version = '0.52')"
+RUN apt-get install hugo -y
 
 COPY dependencies/requirements.python.txt /dependencies/requirements.python.txt
 RUN pip3 install -r requirements.python.txt
