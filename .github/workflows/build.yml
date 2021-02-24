@@ -20,4 +20,11 @@ jobs:
           git clone https://github.com/greysweater42/cookbook
           cd cookbook
           Rscript -e "blogdown::build_site()"
+          git clone https://${COOKBOOK_TOKEN}@github.com/greysweater42/greysweater42.github.io
+          cd greysweater42.github.io
+          rm -rf *
+          cp -r ../public/* .
+          git add .
+          git commit -m "commit"
+          git push
 
