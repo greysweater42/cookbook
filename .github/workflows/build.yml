@@ -9,7 +9,7 @@ jobs:
         image: ghcr.io/greysweater42/cookbook:latest
         credentials:
           username: greysweater42
-          password: ${{ secrets.ghcr_password }}
+          password: ${{ secrets.COOKBOOK_TOKEN }}
     steps:
     - name: build and push to github pages
       env:
@@ -19,4 +19,5 @@ jobs:
           git config --global user.name "auto"
           git clone https://github.com/greysweater42/cookbook
           cd cookbook
-          Rscript -e "blogdown::build_site()"
+          Rscript -e "options(blogdown.hugo.dir='/root/bin/hugo'); blogdown::build_site()"
+
