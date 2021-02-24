@@ -1,5 +1,5 @@
 ---
-title: "pytorch"
+title: " basic pytorch"
 date: 2019-01-06T17:44:32+01:00
 draft: false
 categories: ["Python", "Machine learning"]
