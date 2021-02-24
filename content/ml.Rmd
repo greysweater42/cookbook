@@ -273,7 +273,7 @@ def get_data(tensorflow=True):
 ```{python, engine.path = '/usr/bin/python3'}
 def construct_beta_graph(X, y):
     cov = tf.matmul(tf.transpose(X), X, name='cov')
-    inv_cov = tf.matrix_inverse(cov, name='inv_cov')
+    inv_cov = tf.linalg.inv(cov, name='inv_cov')
     xy = tf.matmul(tf.transpose(X), y, name='xy')
     beta = tf.matmul(inv_cov, xy, name='beta')
     return beta
