@@ -19,7 +19,8 @@ RUN apt-get install pandoc=2.5-3build2 -y
 RUN apt-get install r-base-core=3.6.3-2 -y
 
 RUN Rscript -e 'install.packages("remotes")'
-COPY dependencies /dependencies
+COPY dependencies/installer.R /dependencies/installer.R
+COPY dependencies/requirements.R.txt /dependencies/requirements.R.txt
 WORKDIR /dependencies
 RUN Rscript installer.R
 
@@ -27,5 +28,6 @@ RUN Rscript -e 'devtools::install_github("greysweater42/decisionTree")'
 RUN Rscript -e 'devtools::install_github("vqv/ggbiplot")'
 RUN Rscript -e "blogdown::install_hugo(version = '0.52')"
 
+COPY dependencies/requirements.python.txt /dependencies/requirements.python.txt
 RUN pip3 install -r requirements.python.txt
 
