@@ -2,7 +2,7 @@
 title: "nlp"
 date: 2018-12-23T15:44:02+01:00
 draft: false
-categories: ["scratchpad"]
+categories: ["machine-learning"]
 tags: []
 ---
 

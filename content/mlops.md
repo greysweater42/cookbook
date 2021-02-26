@@ -1,5 +1,5 @@
 ---
-title: "Mlops"
+title: "mlops"
 date: 2021-02-17T16:56:08+01:00
 draft: false
 categories: ["scratchpad"]
