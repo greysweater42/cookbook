@@ -2,7 +2,7 @@
 title: "XAI"
 date: 2020-11-22T12:38:18+01:00
 draft: false
-categories: ["machine-learning"]
+categories: ["Machine learning"]
 ---
 
 # 1. Why even bother explaining machine learning models?

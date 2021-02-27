@@ -2,7 +2,7 @@
 title: "pytorch"
 date: 2021-02-17T16:13:51+01:00
 draft: false
-categories: ["python", "machine-learning"]
+categories: ["Python", "Machine learning"]
 ---
 
 ## 1. What is pytorch and why is it interesting?
