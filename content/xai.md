@@ -19,7 +19,7 @@ The most popular approaches are:
 
 Useful resources:
 
-- [A Unified Approach to Interpreting Model Predictions]() - a pretty good paper where the original SHAP values are defined, but definitely too complicated to begin with. You should read the three papers listed below. Having read them, you may get back to this one, from which you will learn that SHAP is pretty much Shapley value used in the context of linear regression and that calculating in directly is super ineffective, so some optimization techniques are used.
+- [A Unified Approach to Interpreting Model Predictions](https://arxiv.org/abs/1705.07874) - a pretty good paper where the original SHAP values are defined, but definitely too complicated to begin with. You should read the three papers listed below. Having read them, you may get back to this one, from which you will learn that SHAP is pretty much Shapley value used in the context of linear regression and that calculating in directly is super ineffective, so some optimization techniques are used.
 
     - lime - as SHAP is a combination of Lime, SHapley value and 4 other methods (actually it is based very heavily on Shapley values, but used in a completely different context) - all the good resources I found are listed below.
 
@@ -60,3 +60,9 @@ To sum up, despite my concerns, I like this method. I think it is a brilliant id
 ### 3. [eli5](https://eli5.readthedocs.io/en/latest/)
 
 TODO
+
+### 4. CAM
+
+More about CAL you will find in my article on [fastai](https://greysweater42.github.io/fastai).
+
+### 5. CNN layers
