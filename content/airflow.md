@@ -12,7 +12,7 @@ output:
 
 * airflow lets you manage your dataflow as a graph (direct acyclic graph or DAG), wchich consists of separate Tasks, and schedule them
 
-*Wait*, you may say, *I can do that with cron!*
+> *Wait*, you may say, *I can do that with cron!*
 
 Yes, you can, but with airflow:
 
@@ -103,10 +103,10 @@ first_task = BashOperator(
 
 ## 3. Useful links
 
-[a good tutorial](http://michal.karzynski.pl/blog/2017/03/19/developing-workflows-with-apache-airflow/)
+- [a good tutorial](http://michal.karzynski.pl/blog/2017/03/19/developing-workflows-with-apache-airflow/)
 
-[another good tutorial](https://airflow.apache.org/tutorial.html)
+- [yet another good tutorial](https://airflow.apache.org/tutorial.html)
+
+- [deployig with airflow and containers](https://towardsdatascience.com/how-to-use-airflow-without-headaches-4e6e37e6c2bc)
 
 Airflow's purpose is rather straightforward, so the best way to learn it is learning-by-doing.
-
-[deployig with airflow and containers](https://towardsdatascience.com/how-to-use-airflow-without-headaches-4e6e37e6c2bc)
