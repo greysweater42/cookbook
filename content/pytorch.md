@@ -7,7 +7,7 @@ categories: ["Python", "Machine learning"]
 
 ## 1. What is pytorch and why is it interesting?
 
-* Pytorch is one of the most popular artificial neural network python package, used mainly for deep learning.
+* Pytorch is one of the most popular artificial neural network python packages, used mainly for deep learning.
 
 * Comparing to other NN frameworks, pytorch:
 
@@ -19,7 +19,7 @@ categories: ["Python", "Machine learning"]
 
 ## 2. A typical NN structure
 
-Pytorch NN scripts share a very similar structure. Many models used in production environment are even almost exactly the same. Let's have a look at these common parts.
+Pytorch NN scripts share a very similar structure: many models used in production environment are even almost exactly the same. Let's have a look at these common components.
 
 ### Dataset
 
@@ -33,6 +33,7 @@ Dataset class presents your data in a python-friendly manner. Having spent some 
 
 Pytorch `Dataset` class complies with all the specifics above. Let's see a basic example:
 ```
+from torch.utils.data import Dataset
 import pandas as pd
 
 class MyDataset(Dataset):
@@ -67,10 +68,12 @@ which returns an iterator over your dataset. The arguments to the loader's initi
 
 ### Neural Net
 
-We have finally reached the core part of the whole script: the neural network definition. Classicaly, as most of the neural networks use backpropagation for optimization, neural network performs two types of operation: **forward** and backward passes. Pytorch handles backward pass by itself as a reversed forward pass, however it is us who defines the forwars pass, which in practice is equivalent to defining the whole neoral network's structure.
+We have finally reached the core part of the whole script: the neural network definition. Classically, as most of the neural networks use backpropagation for optimization, neural network performs two types of operation: **forward** and backward passes. Pytorch handles backward pass by itself as a reversed forward pass, however it is us who defines the forward pass, which in practice is equivalent to defining the whole neural network's structure.
 
-An example of a very simple comvolutional network:
+An example of a very simple convolutional network:
 ```
+import torch.nn as nn
+
 IMAGE_SIZE = (64, 64)
 
 class Net(nn.Module):
@@ -89,7 +92,28 @@ class Net(nn.Module):
         return x
 ```
 
-In practice, you often use transfer learning, i.e. instead of learning all the weights by yourself, you load the weights provided by researchers or any external companies to the majority of layers of your network. Example: (TODO)
+In practice, you often use transfer learning, i.e. instead of learning all the weights by yourself, you load the weights provided by researchers or any external companies to the majority of layers of your network. Example:
+
+```
+import torch.nn as nn
+from torchvision import models
+
+class Net(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = models.ResNet50(pretrained=True)
+        self.model.fc = nn.Sequential(
+            nn.Linear(self.model.fc.in_features, 500),
+            nn.ReLU(),
+            nn.Dropout(),
+            nn.Linear(500, 2),
+        )
+
+    def forward(self, x):
+        return self.model(x)
+```
+
+Models which you can use for transfer learning are briefly described in [pytorch docs](https://pytorch.org/vision/stable/models.html). A more in-depth tutorial you will find in [Programming PyTorch for Deep Learning](https://www.amazon.com/Programming-PyTorch-Deep-Learning-Applications/dp/1492045357), chapter 4.
 
 ### training the model
 
@@ -146,5 +170,5 @@ print(confusion_matrix(np.concatenate(trues), np.concatenate(preds)))
 
 - My favourite book on Pytorch is by now [Programming PyTorch for Deep Learning](https://www.amazon.com/Programming-PyTorch-Deep-Learning-Applications/dp/1492045357)
 
-- and a legendary book by Ian Goodfellow: [Deep Learning (Adaptive Computation and Machine Learning series)](https://www.amazon.com/Deep-Learning-NONE-Ian-Goodfellow-ebook/dp/B01MRVFGX4), which concentrates mostly on mathematical side of neural networks and (I think) does not even mention Pytorch at all. Worth reading, in any case. Eventually knowing pytorch is useless unless you understand neural networks well.
+- and a legendary book by Ian Goodfellow: [Deep Learning (Adaptive Computation and Machine Learning series)](https://www.amazon.com/Deep-Learning-NONE-Ian-Goodfellow-ebook/dp/B01MRVFGX4), which concentrates mostly on mathematical side of neural networks and (I think) does not even mention Pytorch at all. Worth reading, in any case. Knowing pytorch is useless unless you understand neural networks well.
 
