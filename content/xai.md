@@ -23,11 +23,11 @@ Useful resources:
 
     - lime - as SHAP is a combination of Lime, SHapley value and 4 other methods (actually it is based very heavily on Shapley values, but used in a completely different context) - all the good resources I found are listed below.
 
-    - [Analysis of regression in game theory approach](https://www.researchgate.net/publication/229728883_Analysis_of_Regression_in_Game_Theory_Approach) - where the idea of using Shapley values in regression appeared. There is also a word on why this seems to be a good idea (in linear regression we lack the statistics to measure the importance of *groups* of coefficients, so we completely forget about "synergies", or "cooperation/coalition", or "multicollinearity"). Permutations are explained in a rather straightfoward way, but if you still could not grasp them, then try the next paper.
+    - [Analysis of regression in game theory approach](https://www.researchgate.net/publication/229728883_Analysis_of_Regression_in_Game_Theory_Approach) - where the idea of using Shapley values in regression appeared. There is also a word on why this seems to be a good idea (in linear regression we lack the statistics to measure the importance of *groups* of coefficients, so we completely forget about "synergies", or "cooperation/coalition", or "multicollinearity"). Permutations are explained in a rather straightforward way, but if you still could not grasp them, then try the next paper.
 
-    - [Introduction to the Shapley value](http://www.library.fa.ru/files/roth2.pdf) - if you have economic background, you will feel at home, as the Shapley the Shapley value is explained here as the average marginal contribution to the score (which is e.g. R squared), and the average is weightd based on the probability that this particular group of coeficients appear together in the model.
+    - [Introduction to the Shapley value](http://www.library.fa.ru/files/roth2.pdf) - if you have economic background, you will feel at home, as the Shapley the Shapley value is explained here as the average marginal contribution to the score (which is e.g. R squared), and the average is weighted based on the probability that this particular group of coefficients appear together in the model.
 
-- Reading only the paper above (and its explanatory papers) may be not enough to actually understand how SHAP works, but you will gain a broad understanding of the subject, e.g. where the whole idea came from. To go further, you can read [this chapter from Interpretable machien learning](https://christophm.github.io/interpretable-ml-book/shap.html)
+- Reading only the paper above (and its explanatory papers) may be not enough to actually understand how SHAP works, but you will gain a broad understanding of the subject, e.g. where the whole idea came from. To go further, you can read [this chapter from Interpretable machine learning](https://christophm.github.io/interpretable-ml-book/shap.html)
 
 ### 2. [lime](https://arxiv.org/abs/1602.04938)
 
@@ -37,11 +37,11 @@ We pretty much build a linear regression model on predictions. Useful resources:
 
 - [python lime package](https://github.com/marcotcr/lime) and its [docs](https://lime-ml.readthedocs.io/en/latest/index.html). Unfortunately after reading docs and github examples I still was not sure how I should interpret the results presented on plots. Anyway it is a good place to start getting familiar with python's lime syntax.
 
-- [a chapter fromm Explanatory Model Analysis by pbiecek](https://pbiecek.github.io/ema/LIME.html) is the place where I finally understood what lime's plots mean. Even though examples are wriiten in R, the plots are analogical to those produced by lime in python, and there is a mathematical explanation for what you can see in them.
+- [a chapter fromm Explanatory Model Analysis by pbiecek](https://pbiecek.github.io/ema/LIME.html) is the place where I finally understood what lime's plots mean. Even though examples are written in R, the plots are analogical to those produced by lime in python, and there is a mathematical explanation for what you can see in them.
 
 - [Explaining the explainer: A First Theoretical Analysis of LIME](https://arxiv.org/abs/2001.03447) - an excellent, in-depth analysis oh how lime works on a simple example of linear regression model. Very useful to understand how lime actually works on tabular data and why you shouldn't trust its estimation values! (in a nutshell: results vary significantly depending on your choice of hyperparameter *v*, i.e. how much "local" you are, e.g. in Poland living near your parents means within 30km range, in Russia - probably around 300km ;) )
 
-In general I it was extremely hard to find proper explanation of what actually lime does. Ironically, the "explainer" which is meant to transform a complex, nonlinear model into an easy to grasp form is very complicated and non-ituitive itself. The cases which I found particurarly obscure are:
+In general I it was extremely hard to find proper explanation of what actually lime does. Ironically, the "explainer" which is meant to transform a complex, nonlinear model into an easy to grasp form is very complicated and non-intuitive itself. The cases which I found particularly obscure are:
 
 - when we calculate the distance between observations we use Gaussian Radial Basis Function (known also as Gaussian kernel - Zaki, Meira, Data Mining ana Analysis, p. 147), we have to choose arbitrarily the value of `v`. Depending on our choice, the results may vary (how much? - I will address this question below)
 
@@ -61,8 +61,51 @@ To sum up, despite my concerns, I like this method. I think it is a brilliant id
 
 TODO
 
-### 4. CAM
+### 4. CAM - Class Activation Mapping
 
-More about CAL you will find in my article on [fastai](https://greysweater42.github.io/fastai).
+In contrast to the previous methods, which are model agnostic, CAM works specifically for convolutional neural networks trained on images. Similarily to shap and lime, it highlights these areas on a given image, which had the biggest impact on prediction, e.g. in case of predicting a cat, it would highlight cat's mouth, ears and tail.
+
+The concept of CAM is rather straightforward and intuitive: we calculate a weighted average of the channels in the last convolutional layers. Weight are provided by the network itself: the come from the linear layer which follows the convolutional layer. In result we recognize which channels from the last convolutional layer contributed the prediction the most, and if channel concentrated on a specific area of the image, which is often the case, we know which areas were the most important. The whole concept was presented in the article [Learning Deep Features for Discriminative Localization](https://arxiv.org/abs/1512.04150).
+
+Unfortunately I haven't come across any decent implementation of CAM in pytorch (maybe there is one, but I couldn't find it). I've seen examples of CAM in keras, but I don't use it on a daily basis, and retraining a model in a different framework sounds like the last thing anyone would want to do. So here's a short script I wrote with the help of [Deep Learning for Coders with fastai and PyTorch](https://www.amazon.com/Deep-Learning-Coders-fastai-PyTorch/dp/1492045527):
+
+```{python}
+class Hook:
+    def hook_func(self, m, i, o): self.stored = o.detach().clone()
+
+hook_output = Hook()
+hook = learn.model[0].register_forward_hook(hook_output.hook_func)  # 1
+
+from pathlib import Path
+import matplotlib.pyplot as plt
+import torch
+
+def cam(i):
+    path = Path("data/fiat-126").ls()[i]  # 2
+    img = PILImage.create(path)
+    x, = first(loader.test_dl([img]))
+
+    with torch.no_grad(): output = learn.model.eval()(x)
+    act = hook_output.stored[0]
+    cam_map = torch.einsum('ck,kij->cij', learn.model[1][-1].weight, act)
+
+    x_dec = TensorImage(loader.train.decode((x,))[0][0])
+
+    _, ax = plt.subplots()
+    x_dec.show(ctx=ax)
+    ax.imshow(cam_map[1].detach(), alpha=0.5, extent=(0,224,224,0), interpolation='bilinear', cmap='magma')
+
+cam(0)
+```
+
+Two lines in this code may be difficult to grasp should you not know the context: 
+
+- #1 `learn` is a fastai `Learner` instance, but instead od `learn.model` you can use any pytorch neural network you want. If you have never seen a pytorch hook: they are not that difficult, unfortunately I could not find any simple tutorial on them. It took quite a while to understand how they work. Anyway, they are not crucial to understand CAM.
+
+- #2 in this example I gave the path to a file stored in "data/fiat-126", but you can (and should) provide a path to a picture that you want to explain.
+
+> At first I was quite disappointed with how CAM works, or, actually, doesn't work. But maybe it just explained to me that my neural network made no sense, which is what I am still investigating. Despite the failure, I still believe in this method, as it seems it should work.
 
 ### 5. CNN layers
+
+TODO
