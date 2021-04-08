@@ -5,6 +5,7 @@ draft: false
 categories: ["scratchpad"]
 ---
 
+> This is not a proper blog post yet, just my notes, hence it is in "scratchpad" category.
 
 ### 1. What and why
 
