@@ -15,7 +15,7 @@ categories: ["Machine learning"]
 
 The most popular approaches are:
 
-### 1. [SHAP](https://arxiv.org/abs/1705.07874)
+## [SHAP](https://arxiv.org/abs/1705.07874)
 
 Useful resources:
 
@@ -29,7 +29,7 @@ Useful resources:
 
 - Reading only the paper above (and its explanatory papers) may be not enough to actually understand how SHAP works, but you will gain a broad understanding of the subject, e.g. where the whole idea came from. To go further, you can read [this chapter from Interpretable machine learning](https://christophm.github.io/interpretable-ml-book/shap.html)
 
-### 2. [lime](https://arxiv.org/abs/1602.04938)
+## [lime](https://arxiv.org/abs/1602.04938)
 
 We pretty much build a linear regression model on predictions. Useful resources:
 
@@ -57,11 +57,11 @@ In general I it was extremely hard to find proper explanation of what actually l
 
 To sum up, despite my concerns, I like this method. I think it is a brilliant idea to explain the black box models, but we should not be as yolo-optimistic as the authors of the majority of articles on medium.com, towardsdatascience.com etc. are and not treat lime as a magical tool that finally solves the black-box explainability problem. Actually I am quite disappointed that the hype on data science leads to dishonest psuedo-papers and false promises ("with lime you can explain any black-box model, because it's model agnostic" - rly? although it is true that it is model agnostic, the quality of the explanation may be very poor, even false and misleading if you do not do it carefully; besides in some cases it may not be possible to find a feasible linear approximation. Well, there are some '24-hour courses' on data science, which may suggest that after 24 hours... you are a competent data scientist? This is a subject for another discussion ;) )
 
-### 3. [eli5](https://eli5.readthedocs.io/en/latest/)
+## [eli5](https://eli5.readthedocs.io/en/latest/)
 
 TODO
 
-### 4. CAM - Class Activation Mapping
+## CAM - Class Activation Mapping
 
 In contrast to the previous methods, which are model agnostic, CAM works specifically for convolutional neural networks trained on images. Similarily to shap and lime, it highlights these areas on a given image, which had the biggest impact on prediction, e.g. in case of predicting a cat, it would highlight cat's mouth, ears and tail.
 
@@ -106,6 +106,6 @@ Two lines in this code may be difficult to grasp should you not know the context
 
 > At first I was quite disappointed with how CAM works, or, actually, doesn't work. But maybe it just explained to me that my neural network made no sense, which is what I am still investigating. Despite the failure, I still believe in this method, as it seems it should work.
 
-### 5. CNN layers
+## CNN layers
 
 TODO
