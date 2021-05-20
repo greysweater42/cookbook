@@ -14,8 +14,6 @@
 
 # folders
 public
-static/*/*
-static/*/*/*
 venv
 __pycache__
 files_from_vagrant1

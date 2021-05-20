@@ -29,32 +29,38 @@ title                      = "greaysweater42's cookbook"
     url                    = "categories/r/"  
 
   [[menu.main]]
-    name                   = "Data engineering"
-    weight                 = 30
-    identifier             = "Data engineering"
-    url                    = "categories/data-engineering/"  
- 
-  [[menu.main]]
     name                   = "Machine learning"
-    weight                 = 35
+    weight                 = 30
     identifier             = "Machine learning"
     url                    = "categories/machine-learning/"  
 
   [[menu.main]]
-    name                   = "DevOps"
+    name                   = "Data engineering"
     weight                 = 40
+    identifier             = "Data engineering"
+    url                    = "categories/data-engineering/"  
+
+  [[menu.main]]
+    name                   = "DevOps"
+    weight                 = 50
     identifier             = "DevOps"
     url                    = "categories/devops/"  
 
   [[menu.main]]
+    name                   = "Genomics"
+    weight                 = 60
+    identifier             = "genomics"
+    url                    = "categories/genomics/"  
+
+  [[menu.main]]
     name                   = "Projects"
-    weight                 = 50
+    weight                 = 70
     identifier             = "Projects"
     url                    = "categories/projects/"  
 
   [[menu.main]]
     name                   = "scratchpad"
-    weight                 = 60
+    weight                 = 80
     identifier             = "scratchpad"
     url                    = "categories/scratchpad/"  
 
@@ -63,3 +69,8 @@ title                      = "greaysweater42's cookbook"
   title = "greysweater42's cookbook"
   description              = "data science tutorials and snippets prepared by greysweater42"
   # faviconfile              = "favicon.ico"
+
+# for raw html parsing
+[markup]
+  [markup.goldmark.renderer]
+    unsafe=true
