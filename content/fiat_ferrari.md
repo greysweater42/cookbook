@@ -258,3 +258,84 @@ Let's take a look at some of the images interpreted by Grad-CAM:
 </div>
 
 It can be clearly seen that the neural network actually looks *at the cars*, which is very important. I learned a shallow neural network on this very same dataset once, it's accuracy was incomparably lower (75%) and it turned out that its predictions were based on the trees behind the cars (or rather: big green areas), as Fiats are much more often photographed in nature. That network clearly could not scale well.
+
+Anyways, Grad-CAM seems to be *detecting* where a car is in the picture... How about playing with object detection for a while?
+
+## 7. But which one *exactly* is ferrari?
+
+Imagine there are two cars in the picture: a Fiat 126 and a La Ferrari (I could not find any single photo of two of these cars next to each other). What would the neural network say? I might be slightly confused. To relieve its confusion we may use object detection, which first detects where are cars in the picture and then makes a separate prediction for each of them.
+
+Let's initiate such a network:
+```{python}
+from PIL import Image, ImageDraw, ImageFont
+
+device = "cuda"
+model = models.detection.fasterrcnn_resnet50_fpn(pretrained=True, min_size=500)
+model.eval().to(device)
+```
+
+It is a rather old-style type of object detection network, RCNN. There are many newer approaches, but this one will work just fine _and_ is already implemented in torchvision.models, so its setup takes just one line of code! Quite convenient.
+
+
+Having the network up and ready we follow these steps:
+
+- detect the cars in the picture. RCNN will give us coordinates of all the objects it found in the picture with their confidence (how sure the network is that it actually is this object)
+- for each "box", which is a rectangle around a car, we predict whether it's a Fiat 126 of La Ferrari
+- and draw both the rectangles and the prediction in the picture.
+
+The function below conveniently runs the procedure described above:
+
+```{python}
+def detect_on_image(image):
+    im = transforms.ToTensor()(image).to(device)
+    im = im.unsqueeze(0)
+    outputs = model(im)
+    outs = outputs[0]
+
+    # I like this "condition" way of coding - I find it very simple and intuitive
+    car_cond = outs['labels'] == 3  # "3" - label for cars in coco dataset
+    confidence_cond = outs['scores'] >= 0.8  # prediction confidence over 80%
+    # predictions, which are cars and are confident
+    car_conf_boxes = outs['boxes'][car_cond & confidence_cond].detach().cpu()
+
+    draw = ImageDraw.Draw(image)
+    color = "#4d0000"
+    # you can download this font from here https://fonts.google.com/specimen/Ubuntu
+    font = ImageFont.truetype("./Ubuntu-Bold.ttf", size=20)
+    for box in car_conf_boxes:
+        sub_image = image.crop(box.numpy())
+        outputs = net(transformers(sub_image).unsqueeze(0).to(device))
+        output = outputs[0]
+        pred_index = int(torch.argmax(output).detach().cpu())
+        class_name = train_dataset.classes[pred_index]
+        coords = (tuple(box[:2]), tuple(box[2:]))
+        draw.rectangle(coords, outline=color, width=3)
+        draw.text([c + 5 for c in coords[0]], class_name, fill=color, font=font)
+    return image
+```
+
+And here are some examples (random images from validation dataset and one, which I prepared specifically for this task in gimp):
+
+```{python}
+detect_on_image(Image.open("data/validation/fiat-126/black_C7070B0608000C097CFDFFFFF.jpg")).save("fiat_detected.jpg")
+detect_on_image(Image.open("data/validation/la-ferrari/white_FF300838D06EFFFFFBFF0E3.jpg")).save("ferrari_detected.jpg")
+detect_on_image(Image.open("test.png")).save("fiat_ferrari_detected.jpg")
+```
+
+<div style="overflow: hidden;">
+    <div class="column" style="float: left; width: 50%; padding: 10px;">
+        <img src="/fiat_ferrari/fiat_detected.jpg" style="width: 100%;"/>
+    </div>
+    <div class="column" style="float: left; width: 50%; padding: 10px;">
+        <img src="/fiat_ferrari/ferrari_detected.jpg" style="width: 100%;"/> 
+    </div>
+</div>
+<img src="/fiat_ferrari/fiat_ferrari_detected.jpg"/> 
+
+This works quite well, actually. I've come up with some random ideas of how it could be used. I'm not sure whether they make sense or not:
+
+- for marketing: car dealers would drive around the biggest cities (or use Google Maps or city surveillance) to check which cars are the most popular in this particular region. This might be helpful to choose the optimal targets for marketing, e.g. we can see that in Warsaw people usually drive expensive, new BMWs, so an Audi dealer could build a new Audi agency in Warsaw instead of any other place. This is an extremely simplified version of this idea, there are many more factors to take into consideration.
+
+- for economic policy, to find out which regions are richer than the others, based on prices of the cars. Or which cultures promote showing off.
+
+We would have to expand the dataset for more car brands, but the data is easily available on the internet.
