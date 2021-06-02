@@ -47,12 +47,6 @@ title                      = "greaysweater42's cookbook"
     url                    = "categories/devops/"  
 
   [[menu.main]]
-    name                   = "Genomics"
-    weight                 = 60
-    identifier             = "genomics"
-    url                    = "categories/genomics/"  
-
-  [[menu.main]]
     name                   = "Projects"
     weight                 = 70
     identifier             = "Projects"
