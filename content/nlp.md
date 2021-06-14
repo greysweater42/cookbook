@@ -67,7 +67,11 @@ The input data is usually very messy. Just as in traditional machine learning (I
 
 ### Learning (classification)
 
-- **LSTM** - for me the best resource to understand those was [this article from Stanford University](https://web.stanford.edu/class/cs379c/archive/2018/class_messages_listing/content/Artificial_Neural_Network_Technology_Tutorials/OlahLSTM-NEURAL-NETWORK-TUTORIAL-15.pdf).
+- **RNN** or **Recurrent Neural Network** is a type of artificial neural network used for working on *sequence* data, so it can be used not only for sentences, which are sequences of words (tokens), but also for time series or any type of observation, which can be indexed reasonably. The main idea is to pass on the output from the current cell to the following one, so each cell ends up with two inputs eventually: the "original" one, i.e. a numerical representation of the word from the sentence and the output of the previous cell.
+
+- **LSTM** - LSTMs are the type of recurrent neural newtorks, which solve the vanishing gradient problem (when the network does not rememeber what was happening many layers earlier) in a savvy way: they use their own, specially created "highways" to pass the "old" information ("old" meaning from the beginning of the sentence) throughout the whole sentence. It resembles the natural way of understanding the spoken language by humans: when we listen to someone speaking, we subconsciously summarize, remember and pass on what we have heard, so when the sentence is finished we can understand it as a whole. 
+    - For me the best resource to understand those was [this article from Stanford University](https://web.stanford.edu/class/cs379c/archive/2018/class_messages_listing/content/Artificial_Neural_Network_Technology_Tutorials/OlahLSTM-NEURAL-NETWORK-TUTORIAL-15.pdf). 
+    - and one more, for a broader view of where LSTMs come from and how to use them in keras: [Deep Learning with Python by François Chollet](https://www.amazon.pl/Deep-Learning-Python-Fran%C3%A7ois-Chollet/dp/1617294438/ref=asc_df_1617294438/?tag=plshogostdde-21&linkCode=df0&hvadid=504635615230&hvpos=&hvnetw=g&hvrand=10537409729516130816&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9061060&hvtargid=pla-356949152624&psc=1), chapter 6: Deep learning for text and sequences.
 
 - **BERT** - I have a very basic intuition on how this works thanks to [BERT's original paper](https://arxiv.org/abs/1810.04805) and I just use it :) with [BERT-pytorch](https://github.com/codertimo/BERT-pytorch).
 
