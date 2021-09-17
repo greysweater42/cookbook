@@ -8,8 +8,7 @@ bit,4.0.4
 bit64,4.0.5
 bitops,1.0-6
 blob,1.2.1
-blogdown,0.20
-bookdown,0.20
+blogdown,1.5
 brew,1.0-6
 broom,0.7.0
 callr,3.4.4
