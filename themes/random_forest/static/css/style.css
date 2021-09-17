@@ -20,7 +20,7 @@ body {
 }
 
 .navbar-show {
-  background-image: url('/random-forest3.jpg');
+  background-image: url('/random-forest4.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -40,7 +40,7 @@ body {
 
 .navbar-hide {
   background-color: none;
-  background-image: url('/random-forest3.jpg'); 
+  background-image: url('/random-forest4.jpg'); 
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -211,7 +211,7 @@ body {
 
 #header {
     margin-bottom:0; 
-    background-image: url('/random-forest3.jpg'); 
+    background-image: url('/random-forest4.jpg'); 
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -221,7 +221,7 @@ body {
 }
 
 #footer {
-    background-image: url('/random-forest3.jpg'); 
+    background-image: url('/random-forest4.jpg'); 
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -267,4 +267,23 @@ h2:target, h3:target, h4:target {
 @media (min-width: 768px) {
   #all-posts-titles {width: 300px;}
   #list-titles {width: 300px;}
+}
+
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p {
+  display: inline;
 }
