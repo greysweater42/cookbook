@@ -9,12 +9,14 @@ tags: ["R", "SQL"]
 
 ## 1. What is sqldf and why would you use it?
 
-`sqldf` package lets you treat any data.frame object as an sql table. You can write queries as if you were in a database. Pretty useless, comparing to, say, data.table or dplyr + tidyverse.
+`sqldf` package lets you treat any `data.frame` object as an sql table, which means that you can write queries just as if you were using an sql database. Since the emergence of libraries such as data.table or dplyr + tidyverse, `sqldf` turns out to be fairly useless, so now it is rather a curiosity than a game-changer.
 
-Despite it's uselessness, it works like a charm.
+Despite its uselessness, it works like a charm.
 
 
-## 2. A few basic examples:
+## 2. A few simple examples:
+
+Semicolon at the end of each query is not obligatory.
 
 Load the package:
 ```{r, eval = FALSE}
@@ -24,12 +26,13 @@ library(sqldf)
 suppressPackageStartupMessages(library(sqldf))
 ```
 
-Selecting specific columns:
+Selecting specific columns (known as "projection operator"):
 ```{r}
+# mtcars is a pre-defined data frame and is already available in the global environment
 sqldf('select mpg, cyl, disp from mtcars where cyl = 6')
 ```
 
-A simple where clause:
+A simple where clause (known as "selection operator"):
 ```{r}
 sqldf('select * from mtcars where mpg > 21')
 ```
@@ -39,7 +42,7 @@ Group by and order by:
 sqldf('select cyl, count(*) number from mtcars group by cyl order by cyl')
 ```
 
-Joins:
+Joining:
 ```{r}
 customers <- data.frame(
   id_customers = c(1, 2, 3),
@@ -59,8 +62,8 @@ Subqueries:
 sqldf('select a.mpg from (select mpg, cyl, disp from mtcars where cyl = 6) as a')
 ```
 
-As you can see, all the sql operations are available in `sqldf`.
+As you can see, all of the most common sql operations are available in `sqldf`.
 
 ## 3. Links
 
-A longer `sqldf` tutorial is available [here](http://jasdumas.com/tech-short-papers/sqldf_tutorial.html#).
+A more in-depth `sqldf` tutorial is available [here](http://jasdumas.com/tech-short-papers/sqldf_tutorial.html#).
