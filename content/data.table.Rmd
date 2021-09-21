@@ -3,36 +3,32 @@ title: "data.table"
 date: 2017-03-02T15:45:27+01:00
 draft: false
 categories: ["R"]
-tags: ["R", "data.table"]
 ---
 
 ## 1. What is data.table and why would you use it? 
 
-* data.table is an R packge which let's you work on tabular datasets quickly and easily;
+* data.table is an R packge which lets you work on tabular datasets quickly and easily
 
-* comparing to base R or [dplyr](http://tomis9.com/tidyverse/#/dplyr) it's significantly faster;
+* comparing to base R or [dplyr](https://greysweater42.github.io/tidyverse/#/dplyr) it's significantly faster
 
-* data.table has a concise and SQL-like syntax.
+* data.table has a concise and SQL-like syntax
 
 ## 2. Basic functionalities 
 
 ### Creating a data.table 
 
+works exactly the same as creating a data.frame. The methods `as.data.table()` and `as.data.frame()` are analogical as well.
+
 ```{r, message = FALSE}
 library(data.table)
 
-df <- data.frame(x = c("b","b","b","a","a"),
-                 v = rnorm(5))
-
-dt <- data.table(x = c("b","b","b","a","a"),
-                 v = rnorm(5))
+df <- data.frame(x = c("b","b","b","a","a"), v = rnorm(5))
+dt <- data.table(x = c("b","b","b","a","a"), v = rnorm(5))
 ```
-
-is exactly the same as creating a data.frame. The method `as.data.table()` works exaclty the same as `as.data.frame()`.
 
 ### Filtering 
 
-Let's create a sample dataset first, baased on mtcars table: 
+Let's create a simple dataset first, based on `datasets::mtcars` data.frame: 
 ```{r}
 sample_dataset <- as.data.table(datasets::mtcars)
 ```
@@ -42,7 +38,10 @@ Yes, you already have *datasets* package installed.
 sample_dataset[cyl == 6]
 ```
 
-What happened? We chose only those cars, which have 6 cylinders. Data.table already knew that we mean a column named `cyl`, not an object from outside of the square brackets.
+What happened? We chose only those cars, which have 6 cylinders. Data.table already knew by saying `cyl` we meant a column named `cyl`, not an object from outside of the square brackets, e.g. global environment. In other words, inside the square brackets there is a separate environement, in which there are objects representing data stored in columns.
+
+>In my humble opinion, this feature makes working on tabular data much more convenient comparing to pandas, hence I slightly prefer R to Python regarding tabular data. 
+>There even is a Python version of data.table called [datatable](https://datatable.readthedocs.io/en/latest/index.html). Looking forward to try it out.
 
 ### Selecting columns 
 
@@ -52,7 +51,7 @@ sample_dataset[, .(mpg, cyl, disp)][1:5]
 
 What happened here?
 
-* we used a special fucntion from data.table package: `.()`, which works just like vectors, but inside data.tables square brackets it treats columns as separate objects, so to work on column `mpg`, you simply type `mpg` instead of `"mpg"` or `sample_dataset$mpg`
+* we used a special function from data.table package: `.()`, which works just like vectors, but inside data.table's square brackets it treats columns as separate objects, so to work on column `mpg`, you simply type `mpg` instead of `"mpg"` or `sample_dataset$mpg`
 
 * in square brackets we first provided a comma, as the first argument is always filtering. If we want to skip filtering, we simply write a comma;
 
@@ -63,22 +62,22 @@ What happened here?
 ```{r}
 sample_dataset[, .(mean_mpg = mean(mpg), count = .N), cyl]
 ```
-* group by is the last statement inside the square brackets. In the example above, we group by column cyl;
+* group by is the last possible statement inside the square brackets. In the example above, we group by column cyl;
 
-* in the select clause we do exactly the same thing as in SQL statements;
+* in the *select* clause we do exactly the same thing as in SQL statements;
 
 * `.N` means *number of* or simply *count*.
 
 ### Reading and writing data 
 
-data.table has the fastest reading and writing functions available in R. These are:
+`data.table` has the fastest reading and writing functions available in R. These are:
 
 ```{r}
 fwrite(x = mtcars, file = 'mtcars.csv')
 ds <- fread(file = 'mtcars.csv')
 ```
 
-`fread` is pretty clever. It recognises if a file has headers, columns datatypes and separators. What I like the most in these functions is that I literally *never* have to provide any details about the file. Object and file names are always enough for data.table.
+`fread` is pretty clever. It recognises whether a file has headers, columns datatypes and separators. What I like the most in these functions is that I literally *never* have to provide any details about the file. Object and file names are always enough for data.table.
 
 ### Ordering data 
 
