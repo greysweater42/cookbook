@@ -2,14 +2,12 @@
 title: "shiny"
 date: 2017-03-24T09:13:23+01:00
 draft: false
-image: "shiny.jpg"
 categories: ["R"]
-tags: ["R", "web-dev"]
 ---
 
 ## 1. What is `shiny` and why would you use it?
 
-* shiny is an R package that let's you create dynamic web applications without any knowledge of html, css and javascript, php etc. Pure R. 
+* shiny is an R web framework designed for creating dynamic web applications without any knowledge of html, css and javascript, php etc. Pure R. 
 
 Sounds like a dream?
 
@@ -21,17 +19,17 @@ Sounds like a dream?
 
 * Disadvantages:
 
-    * scalability;
+    * weak scalability;
     
-    * performance;
+    * poor performance;
 
     * in order to make the application work the way you want to, you have to involve javascript, html and css. This may be cumbersome, as the documentation is not very helpful;
 
     * shiny is a nieche framework, so it's community is little. Stackoverflow disappoints annoyingly often;
 
-    * lack of a good book/tutorial. RStudio articles are not structured and I've spent hard time finding a learning path.
+    * lack of a good book/tutorial. RStudio articles are not structured and I've spent hard time finding a passable learning path.
 
-Concluding, I've got mixed feelings about `shiny`. As a data scientist, maybe you should concentrate on fitting models and wrangling data instead of preparing a bright and shiny front-end.
+I've got mixed feelings about `shiny`. As a data scientist, maybe you should consider concentrating on fitting models and wrangling data instead of preparing shiny front-ends.
 
 ## 2. A "Hello World" example:
 
