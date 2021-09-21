@@ -2,19 +2,18 @@
 title: "lubridate"
 date: 2017-03-03T13:46:45+01:00
 draft: false
-image: "lubridate.jpg"
 categories: ["R"]
-tags: ["lubridate", "R"]
 ---
 
 ## 1. What is lubridate and why would you use it?
 
-* it's an R package that makes working with dates easy;
+* it's an R package that makes working with dates easy
 
-* because in basic, no-frills R working with dates may be a little bit daunting
+* because in base R working with dates may be a little bit daunting
+
+* the only disadvantage is performance, so use it for small datasets only
 
 ## 2. A few "Hello World" examples
-
 
 Load the package
 ```{r, eval = FALSE}
@@ -50,7 +49,7 @@ print(d)
 class(d)
 ```
 
-Now, analogical to python's `datetime.now()`:
+`now`, the same as `datetime.now()` in Python's datetime package:
 ```{r}
 # the base way
 n <- Sys.time()
@@ -67,7 +66,7 @@ second(n)
 
 Days of the week
 ```{r}
-wday(d)  # numbering starts from Sunday! you can adjust it, read ?wday
+wday(d)  # numbering starts from Sunday! you can adjust it, have a look at ?wday
 ```
 
 Adding / subtracting dates:
