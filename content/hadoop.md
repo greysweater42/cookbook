@@ -2,16 +2,14 @@
 title: "hadoop"
 date: 2018-12-04T21:32:35+01:00
 draft: false
-image: "hadoop.jpg"
 categories: ["Data engineering"]
-tags: ["hadoop", "Data engineering"]
 ---
 
 ## 1. What is hadoop and why would you use it? 
 
-* hadoop is the first popular big data tool ever;
+* hadoop is the first ever popular big data tool;
 
-* it let's you "quickly" compute huge amounts of data thanks to dividing computation into many machines (a cluster of machines); "quickly" comparing to a standard, one-machine approach;
+* it lets you *quickly* compute huge amounts of data thanks to dividing computation into many machines i.e. a cluster of machines; (*quickly* comparing to a standard, one-machine approach);
 
 * you can store and easily access huge amounts of data thanks to hadoop's distributed file system (hdfs);
 
@@ -22,7 +20,7 @@ tags: ["hadoop", "Data engineering"]
 
 In production environment Hadoop should be installed on several interconnected machines, called a cluster. I'm not going to explain how to do this, as this is usually a task for sysadmins/DevOps guys, and not for data scientists. However it is very usufeul to have your own one-node hadoop installation on your laptop for practising basic big data solutions. This is what we're going to install in this section.
 
-Script which you have to run to install hadoop is available [here](hadoop.sh). You can run the whole file with
+[Here](hadoop.sh)'s a little script that I wrote which installs and runs hadoop. You can execute it with
 ```
 sudo bash hadoop.sh
 ```
@@ -35,8 +33,7 @@ You probably expect that knowing Hadoop will let you do Big Data. It would, but 
 
 But there is still one functionality that was not replaced: a file system, called *hadoop distributed file system* or *hdfs*, where limited disk capacity is no longer a problem.
 
-
-There are a couple of useful commands to remember. We can clearly see their resemblance to bash commands.
+There are a couple of useful commands to remember. Their resemblance to bash commands is quite obvious.
 
 ls - list files in a given directory
 ```
