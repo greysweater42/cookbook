@@ -1,7 +1,7 @@
 ---
 title: "linux tools"
 date: 2020-02-05T11:31:21+01:00
-draft: false
+draft: true
 categories: ["scratchpad"]
 ---
 

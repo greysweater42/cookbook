@@ -1,7 +1,7 @@
 ---
 title: "kafka"
 date: 2018-08-18T14:33:57+02:00
-draft: false
+draft: true
 categories: ["scratchpad"]
 ---
 

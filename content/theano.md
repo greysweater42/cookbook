@@ -1,9 +1,8 @@
 ---
 title: "theano"
 date: 2019-01-06T19:36:46+01:00
-draft: false
+draft: true
 categories: ["scratchpad"]
-tags: []
 ---
 
 <center>

@@ -1,7 +1,7 @@
 ---
 title: "gitlab-ci"
 date: 2018-08-21T17:56:38+02:00
-draft: false
+draft: true
 categories: ["scratchpad"]
 ---
 

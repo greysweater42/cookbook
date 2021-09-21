@@ -1,9 +1,8 @@
 ---
 title: "cassandra"
 date: 2019-02-05T17:33:24+01:00
-draft: false
+draft: true
 categories: ["scratchpad"]
-tags: []
 ---
 
 <center>
