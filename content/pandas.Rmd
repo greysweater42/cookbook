@@ -3,14 +3,12 @@ title: "pandas"
 date: 2019-01-25T13:46:12+01:00
 draft: false
 categories: ["Python", "Data engineering", "scratchpad"]
-tags: []
 ---
 
-<center>
-# This is not a proper blog post yet, just my notes.
+<div align="center">
+<h2>This is not a proper blog post yet, just my notes.</h2>
+</div><\br><\br><\br><\br>
 
-pandas (TODO)
-</center>
 
 # 1. What is `pandas` and why would you use it?
 
