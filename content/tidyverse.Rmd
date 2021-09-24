@@ -9,7 +9,7 @@ tags: ["tidyverse", "R", "data.table", "dplyr", "ggplot2", "readr"]
 
 ## 1. What is tidyverse and why would you use it? 
 
-* [tidyverse](https://www.tidyverse.org/) is a collection of R packages that make working on data a much nicer experience than using base R;
+* [tidyverse](https://www.tidyverse.org/) is a collection of R packages that make working on data a much nicer experience comparing to base R;
 
 * it consists of tidyr, dplyr, ggplot2, tibble and a few more.
 
@@ -19,7 +19,7 @@ To be honest, I prefer [data.table](http://tomis9.com/data.table) to tidyverse, 
 
 ### readr 
 
-Or how do we read and write data in `tidyverse`.
+Or how we read and write data in `tidyverse`.
 
 Nobody uses basic R functions to read tabular data anymore. `data.table::fread()` and `readr::read_csv()` are smarter and faster.
 
@@ -50,23 +50,23 @@ print(data_t)
 ```
 Tibbles do not differ much from data.frames, except (according to the documentation, i.e. `?tibble::tibble`):
 
->     ‘tibble()’ is a trimmed down version of ‘data.frame()’ that:
+>‘tibble()’ is a trimmed down version of ‘data.frame()’ that:
 >
->        • Never coerces inputs (i.e. strings stay as strings!).
+>• Never coerces inputs (i.e. strings stay as strings!).
 >
->        • Never adds ‘row.names’.
+>• Never adds ‘row.names’.
 >
->        • Never munges column names.
+>• Never munges column names.
 >
->        • Only recycles length 1 inputs.
+>• Only recycles length 1 inputs.
 >
->        • Evaluates its arguments lazily and in order.
+>• Evaluates its arguments lazily and in order.
 >
->        • Adds ‘tbl_df’ class to output.
+>• Adds ‘tbl_df’ class to output.
 >
->        • Automatically adds column names.
+>• Automatically adds column names.
 >
->     ‘data_frame()’ is an alias to ‘tibble()’.
+>‘data_frame()’ is an alias to ‘tibble()’.
 
 Btw, to create a tibble by hand, you use:
 
@@ -103,7 +103,7 @@ What happened here:
 
 * we used a `select` to select columns we were interested in, just like in SQL;
 
-* we used a `filter` function just as SQL's where clause;
+* we used a `filter` function just as SQL's `where` clause;
 
 * we ordered the dataset with `arrange`;
 
@@ -125,7 +125,7 @@ What happened here:
 
 * we wrote the aggregation functions: `n()` stands for number of objects or `count` in SQL and `mean()` is an example of an aggreagtion function (`sum`, `sd`, `median`, ...)
 
-Another example of grouping, woth count (count is exactly the same as `group_by() %>% summarise(n = n())`, but shorter):
+Another example of grouping, with count (count is exactly the same as `group_by() %>% summarise(n = n())`, but shorter):
 
 ```{r}
 mtcars %>% 
@@ -134,7 +134,7 @@ mtcars %>%
 
 ### ggplot2 
 
-I prepared a separate tutorial for [ggplot2](http://tomis9.com/ggplot2).
+I prepared a separate tutorial for [ggplot2](https://greysweater42.github.io/ggplot2).
 
 ## 3. Curiosities 
 
