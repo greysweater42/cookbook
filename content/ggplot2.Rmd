@@ -1,22 +1,17 @@
 ---
-title: "ggplot(2)"
+title: "ggplot2"
 date: 2017-03-24T09:03:49+01:00
 draft: false
 categories: ["R", "Python"]
-tags: ["R", "ggplot2", "tidyverse"]
 ---
 
-## 1. What is ggplot(2) and why would you use it?
+## 1. What is ggplot2 and why would you use it?
 
 * ggplot2 is an R package which makes creating nice-looking plots easy;
 
 * the plots you create are highly customizable;
 
 Once you learn ggplot2, you will not make any production plots using basic R. However, due to it's verbosity, for simple exploratory analysis I still use basic functions: plot, lines, hist and boxplot.
-
-It turns out someone translated ggplot2 to python, where it is called simply "ggplot". The syntax is very similar, however there are some quirks that I want to point out. They usually arise from pandas' unintuitive functions. Or methods.
-
->disclaimer: I *really* prefer working with dataframes in R, no matter if it's dplyr or data.table. Pandas is just way too complicated and obscure.
 
 ## 2. A few "Hello World" examples
 
@@ -33,36 +28,12 @@ sample_data <- data.frame(
 print(sample_data)
 ```
 
-Analogical dataset created with Pandas in Python (not the same, because sampling methods are different in R and Python):
-
-```{python, engine.path = '/usr/bin/python3', eval = FALSE}
-import pandas as pd
-import string
-import numpy as np
-
-sample_data = pd.DataFrame({
-    'a': list(string.ascii_lowercase[:10]),
-    'b': np.random.choice(range(10), size=10, replace=True),
-    'color': np.random.choice(("red", "green", "blue"), size=10, replace=True)
-})
-
-print(sample_data)
-```
-
 The most basic plot in R:
 ```{r}
 library(ggplot2)
 ggplot(sample_data, aes(x = a, y = b)) + 
     geom_point()
 ```
-
-And in Python:
-```{python, engine.path = '/usr/bin/python3', eval = FALSE}
-from ggplot import *
-ggplot(sample_data, aes(x='a', y='b')) +\
-    geom_point()
-```
-As you can see, syntax is almost exactly the same.
 
 A little bit less basic plot, as points can be categorised by their colors:
 ```{r}
@@ -81,23 +52,23 @@ ggplot(data = sample_data, mapping = aes(x = a, y = b)) +
 
 ### Combining multiple types of plots
 
-We'll use a dataset `mpg` which is available in ggplot2 package.
+We'll use a dataset `mpg` (miles per gallon) which is available in ggplot2 package.
 ```{r}
 ggplot(data = mpg) + 
     geom_smooth(mapping = aes(x = displ, y = hwy, color = drv, linetype=drv)) +
     geom_point(mapping = aes(x = displ, y = hwy, color = drv))
 ```
 
-Smoothing may be useful if you want to show trend.
+Smoothing may be useful if you want to show the trend.
 
-You can have different mapping for every plot:
+You can have different mappings for every plot:
 ```{r}
 ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
     geom_point(mapping = aes(color = class)) +
     geom_smooth()
 ```
 
-Different datasets are also possible, but rather unusual.
+Many datasets on one plot are also possible, but rather unusual.
 
 ### Bar plots
 
@@ -124,8 +95,7 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
     coord_flip()
 ```
 
-We also used `coord_flip()`, which rotates the plot by 90 degrees, or, another words, flips the coordinates.
-
+We also used `coord_flip()`, which rotates the plot by 90 degrees, or, in other words, flips the coordinates.
 
 ### Maps
 
@@ -141,12 +111,12 @@ We used two interesting functions:
 
 * `map_data()` - a ggplot2's function, which provides spatial data for a few countries in the world;
 
-* `coord_quickmap()` - adjusts the size of a plot to the size of map. Default settings cause the opposite.
+* `coord_quickmap()` - adjusts the size of a plot to the size of map. Default settings do the opposite.
 
 
-### Other functions example
+### Examples of other functions
 
-Here's a weird plot, which aims at presenting various customisation examples:
+Here's a rather weird plot, which aims at presenting various customization examples:
 ```{r}
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
     geom_rect(mapping=aes(xmin=15, xmax=20, ymin=0, ymax=max(hwy)), 
