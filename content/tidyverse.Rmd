@@ -161,7 +161,7 @@ data.table::as.data.table(mtcars) %>%
     head()
 ```
 
-## 4. Subjects still to cover: 
+## 4. Subjects still to cover
 
 * dplyr: joins, slice, spread, separate/unite (TODO) (spread is dcast)
 
