@@ -1,12 +1,8 @@
 # cookbook
 
-[![Build status](https://travis-ci.org/tomis9/cookbook.svg?branch=master)](https://travis-ci.org/tomis9/cookbook)
+*programming tutorials and snippets prepared by greysweater42* available at [greysweater42.github.io](https://greysweater42.github.io).
 
-*programming tutorials and snippets prepared by greysweater42* available at [tomis9.github.io](tomis9.github.io).
-
-
-This repo contains all the posts written in markdown and Rmarkdown, that are published on my blogsite. Before being published, they are compiled using [Hugo](https://gohugo.io/) on [travis](https://travis-ci.org/).
-
+This repo contains all the posts written in markdown and Rmarkdown, that are published on my blogsite. Before being published, they are compiled using [Hugo](https://gohugo.io/) with Github Actions.
 
 If you think about writing your own blog, I highly recommend this workflow, as it is:
 
