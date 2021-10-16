@@ -11,7 +11,7 @@ tags: []
 
 - Just kidding with [pytorch](https://greysweater42.github.io/pytorch) ;) but still you will have to choose between these two (or even more) frameworks at the very early stage of the analysis.
 
-- Keras is a high-level framework for working with neural networks, written in Python and capable of running on top of either TensorFlow, Microsoft Cognitive Toolkit (CNTK) or Theano
+- Keras is a high-level framework for working with neural networks, written in Python and capable of running on top of either TensorFlow, Microsoft Cognitive Toolkit (CNTK) or Theano.
 
 # 2. Example usage
 
@@ -21,9 +21,11 @@ Yes, it's going to be MNIST ;)
 
 Based on [Deep learning with Python](https://www.manning.com/books/deep-learning-with-python), chapter 2.
 
+You can use `Sequential API` or `Model API` (there is also Functional API, but I will not cover it as it is almost exactly the same Sequential API), they both work exactly the same, but as you can see, `Sequential API`'s syntax is much shorter and `Model API`'s syntax looks almost exactly the same as [pytorch](https://greysweater42.github.io/pytorch/#neural-net).
+
 ```
-from keras.datasets import mnist
-from keras.utils import to_categorical
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.utils import to_categorical
 
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
@@ -33,36 +35,52 @@ X_test = X_test.reshape((10000, 28 * 28)).astype('float32') / 255
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
-from keras import models, layers
-network = models.Sequential()
-network.add(layers.Dense(512, activation='relu', input_shape=(28 * 28,)))
-network.add(layers.Dense(10, activation='softmax'))
+
+# you can use Sequential API
+import keras
+network = keras.models.Sequential()
+network.add(keras.layers.Dense(512, activation='relu'))
+network.add(keras.layers.Dense(10, activation='softmax'))
+
+# or Model API - up to you!
+from tensorflow import nn, keras
+
+class Network(keras.Model):
+
+  def __init__(self):
+    super(Network, self).__init__()
+    self.d1 = keras.layers.Dense(512, activation=nn.relu)
+    self.d2 = keras.layers.Dense(10, activation=nn.softmax)
+
+  def call(self, inputs):
+    x = self.d1(inputs)
+    return self.d2(x)
+
+network = Network()
+####
 network.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-
-
 network.fit(X_train, y_train, epochs=5, batch_size=128)
 
 test_loss, test_acc = network.evaluate(X_test, y_test)
-# y_hat = network.predict(X_test)  # and this is how you make predictions
+print(test_acc)
+y_hat = network.predict(X_test)  # and this is how you make predictions
 ```
 
 ## GPU support
 
-TO be honest, I've enver used any other backend than tensorflow and I don't see any particular reason for doing otherwise. Keras does not provide any interface to force calculation on GPU, so we have to go under the hood, straight to tensorflow.
+The easiest way to run keras on GPU is to pull a tensorflow-gpu image with:
 
 ```
-import tensorflow as tf
-from tensorflow.python.keras import backend as K
-
-# adjust values to your needs
-config = tf.compat.v1.ConfigProto( device_count = {'GPU': 1 , 'CPU': 8} )
-sess = tf.compat.v1.Session(config=config) 
-K.set_session(sess)
+docker pull tensorflow/tensorflow:latest-gpu
 ```
 
-Solution provided by [stackoverflow](https://stackoverflow.com/a/66047607).
+start it up with:
 
-You can test it on [Google Colab](https://colab.research.google.com/), which provides modest, but free GPU in cloud to have fun with. Just remebmber to initiate GPU support in Edit > Notebook settings > HArdware accelerator > GPU.
+```
+docker run --gpus all -it --rm tensorflow/tensorflow:latest-gpu bash
+```
+
+and run your code in it. But first you should configure GPU on the machine you're working at. Just follow [this procedure](https://www.tensorflow.org/install/gpu) (basically you should get to the point, when you can run `nvidia-smi` from your terminal).
 
 # 3. Interesting resources
 
@@ -79,4 +97,6 @@ You can test it on [Google Colab](https://colab.research.google.com/), which pro
 - transfer learning? TODO
 
 - data augmentation? TODO
+
+- YOLO or object detection, in general TODO
 
