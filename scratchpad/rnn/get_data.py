@@ -6,22 +6,22 @@ from tqdm import tqdm
 from psaw import PushshiftAPI
 
 
-# 1
+# reading reddit credentials
 reddit_creds_path = Path.home() / "cookbook" / "scratchpad" / "rnn" / "creds.json"
 with open(reddit_creds_path, "r") as f:
     reddit_creds = json.load(f)
 
-# 2
+# setting up a connection
 reddit = praw.Reddit(
     client_id=reddit_creds["client_id"],
     client_secret=reddit_creds["client_secret"],
-    user_agent="cats_or_dogs",
+    user_agent="python_or_dog",
     username=reddit_creds["username"],
     password=reddit_creds["password"],
 )
 api = PushshiftAPI(reddit)
 
-# 3
+# a function for downloading posts
 def get_data(api, subreddit_name):
     submissions = api.search_submissions(limit=10000, subreddit=subreddit_name)
     bodies = []
@@ -31,7 +31,7 @@ def get_data(api, subreddit_name):
     return topics_data
 
 
-# 4
+# downloading posts
 all_posts = dict()
 for pet in ["dogs", "Python"]:
     raw_data = get_data(api, subreddit_name=pet)
@@ -39,7 +39,7 @@ for pet in ["dogs", "Python"]:
     print("downloading {} finished".format(pet))
     del raw_data  # save some memory
 
-# 5
+# saving results
 result = pd.concat(all_posts.values())
 save_path = Path.home() / "cookbook" / "scratchpad" / "rnn"
 result.to_csv(save_path / "posts_reddit.csv", index=False)
