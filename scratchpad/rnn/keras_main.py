@@ -12,7 +12,6 @@ test = text_dataset_from_directory(DATA_PATH / "test", labels="inferred", batch_
 
 encoder = tf.keras.layers.TextVectorization(max_tokens=VOCAB_SIZE)
 encoder.adapt(train.map(lambda text, label: text))
-vocab = np.array(encoder.get_vocabulary())
 
 model = tf.keras.Sequential(
     [

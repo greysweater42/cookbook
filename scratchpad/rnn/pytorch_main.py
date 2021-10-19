@@ -8,21 +8,18 @@ import torch.nn as nn
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 
-device = "cuda"
+device = "cpu"
 
 # dataset
 LABEL = data.LabelField()
-POST = data.Field(tokenize="spacy", lower=True)
+POST = data.Field(tokenize="spacy", lower=True, tokenizer_language="en_core_web_sm")
 fields = [("body", POST), ("label", LABEL)]
-dataset = data.TabularDataset(
-    path="pytorch_data.csv", format="CSV", fields=fields, skip_header=False
-)
+dataset = data.TabularDataset(path="pytorch_data.csv", format="CSV", fields=fields)
 train, test = dataset.split(split_ratio=[0.8, 0.2])
 
 # vocabulary
-vocab_size = 10000
-POST.build_vocab(train, max_size=vocab_size)
-LABEL.build_vocab(train)  # fixes weird error
+POST.build_vocab(train, max_size=10000) # , vectors = 'glove.6B.200d')
+LABEL.build_vocab(train)  # fixes `"LabelField" has no attribute "vocab"`
 
 # data loaders
 train_iterator, test_iterator = data.BucketIterator.splits(
@@ -35,13 +32,11 @@ train_iterator, test_iterator = data.BucketIterator.splits(
 
 # neural network
 class Net(nn.Module):
-    def __init__(self, hidden_size, embedding_dim, vocab_size):
+    def __init__(self):
         super(Net, self).__init__()
-        self.embedding = nn.Embedding(vocab_size, embedding_dim)  # 10000 > 300
-        self.encoder = nn.LSTM(
-            input_size=embedding_dim, hidden_size=hidden_size, num_layers=1
-        )
-        self.predictor = nn.Linear(hidden_size, 1)
+        self.embedding = nn.Embedding(len(POST.vocab), 300)
+        self.encoder = nn.LSTM(input_size=300, hidden_size=100, num_layers=1)
+        self.predictor = nn.Linear(100, 1)
 
     def forward(self, seq):
         _, (hidden, _) = self.encoder(self.embedding(seq))
@@ -50,11 +45,13 @@ class Net(nn.Module):
 
 
 # training neural network
-model = Net(100, 300, vocab_size + 2)
+model = Net()
 model.to(device)
 
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 criterion = torch.nn.BCEWithLogitsLoss()
+# criterion = torch.nn.MSELoss()
+# criterion = torch.nn.BCELoss()
 
 epochs = 10
 for epoch in range(1, epochs + 1):
@@ -92,3 +89,8 @@ labels = torch.cat(labels)
 
 print(accuracy_score(preds > 0.5, labels))
 print(confusion_matrix(preds > 0.5, labels))
+
+import numpy as np
+
+np.unique(preds.numpy().reshape(-1), return_counts=True)
+np.unique(labels.numpy().reshape(-1), return_counts=True)
