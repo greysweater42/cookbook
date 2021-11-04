@@ -3,26 +3,43 @@ title: "model validation"
 date: 2019-05-23T12:46:03+02:00
 draft: false
 categories: ["Machine learning"]
-tags: []
 ---
 
 ## 1. What is model validation and why would you do it?
 
-You learned your model and naturally you are wondering how good it is. There are several ways to find out, like measuring the accuracy of predictions, but you may also want to check where exactly particular predictions come from, as this is far from obvious for "black box" models.
+You learned your model and naturally you are wondering how good it is. There is no universal measure of "goodness", so usually you have to combine a few different measures and by getting a broader picture, make the final decision: whether your model is worth anything ;).
 
-## 2. Examples
+In machine learning the two most popular problems are **classification** and **regression** (in machine learning regression refers to the problems, where a *real* value is predicted, not a class as for classification; in statistics it rather refers to linear regression and its derivatives, i.e. a statistical model, which is a group of statistical hypotheses), and both of them use different measures.
 
-### cross-validation 
+## 2. Classification metrics
 
-### confusion matrix 
+Let's say you created a simple classifier, e.g. using logistic regression. The classifier does not return classes though, but the probability that this particular observation belongs to class 1. As what we need are classes, not probabilities, we have to somehow *map* these probabilities into classes. The easiest way to achieve this is by using a function like:
 
-https://www.rdocumentation.org/packages/caret/versions/3.45/topics/confusionMatrix
+$$ f(t) = \begin{cases} 1 & \text{when $p \geqslant t$} \\ 0 & \text{when $p < t$} \\ \end{cases} $$
 
-Confusion matrix is confusing at all as the name may suggest. 
+where $t$ is a threshold set by *you*. Choose wisely ;)
+
+All of the methods presented below assume that you have already chosen the threshold (confusion matrix and its derivatives), or abstract from choosing it (ROC, AUC).
+
+### a) confusion matrix
+
+#### - theory
+
+Confusion matrix is not at all as confusing as the name may suggest. It is arguably the most basic measure of quality of a model and being an experienced data scientist you can immediately tell if the model is good or not. The definition:
+
+$$
+\begin{bmatrix}
+TP & FN \\
+FP & TN 
+\end{bmatrix}
+$$
+
+where **real values** are in *rows*, **predictions** are in *columns*, and *T* means *true*, *F* means *false*, *P* means *positive* and *N* means *negative*.
+
+#### - examples
 
 * base R
 
-- dataset preparation (described in more detail [here](http://tomis9.com/useful_processing))
 ```{r}
 # prepare the dataset
 library(caret)
@@ -48,6 +65,7 @@ y_test[1:10]
 y_hat_test[1:10]
 ```
 
+
 so now we may use a simple `table()` function to create a confusion matrix:
 ```{r}
 table(y_hat_test, y_test)
@@ -55,7 +73,10 @@ table(y_hat_test, y_test)
 
 * R caret
 
-`caret` provides a much broader summary of confusion matrix:
+We will use a [confusionMatrix](https://www.rdocumentation.org/packages/caret/versions/3.45/topics/confusionMatrix) function. Keep in mind that `caret` is a huge machine learning library, almost an entire new language inside R, so introducing it into your code just for the sake of confusion matrix may be an overkill.
+
+Still, `caret` provides a much broader summary of confusion matrix:
+
 ```{r}
 library(caret)
 m2 <- train(Species ~ Sepal.Length, train, method = "glm", family = binomial)
@@ -84,18 +105,60 @@ accuracy_score(lr.predict(X_test), y_test)
 print(confusion_matrix(lr.predict(X_test), y_test))
 ```
 
+### b) confusion matrix derivatives: precision/recall, sensisivity/specificity etc.
 
-### ROC, AUC 
+Looking at confusion matrix may be a little confusing though, as you have to extract information from four numbers. Couldn't we use one or two numbers to make things easier?
 
-Let's say you created a simple classifier, e.g. using logistic regression. The classifier does not return classes though, but the probability that this particular observation belongs to class 1. As what we need are classes, not probabilities, we have to somehow *map* these probabilities into classes. The easiest way to achieve this is by using a function like:
+#### - [precision/recall trade-off](https://towardsdatascience.com/precision-vs-recall-386cf9f89488)
 
-$$ f(t) = \begin{cases} 1 & \text{when $p \geqslant t$} \\ 0 & \text{when $p < t$} \\ \end{cases} $$
+Just a helpful reminder of confusion matrix:
 
-where $t$ is a threshold set by *you*. Choose wisely ;)
+$$
+\begin{bmatrix}
+TP & FN \\
+FP & TN 
+\end{bmatrix}
+$$
 
-Choosing a proper value of $t$ is known as a "Precision / Recall tradeoff":
+There are two measures based on confusion matrix that are particurarily interesting, called precision and recall:
 
-- [a wonderful, intuitive article](https://towardsdatascience.com/precision-vs-recall-386cf9f89488)
+$$ \textrm{precision} = \frac{\textrm{TP}}{\textrm{TP} + \textrm{FP}} $$
+
+$$ \textrm{recall} = \textrm{sensitivity} = \textrm{TPR} = \frac{\textrm{TP}}{\textrm{TP} + \textrm{FN}} $$
+
+where TPR means True Positive Rate. Why is this a trade-off? Because you want to maximize both of these measures, but while one goes up, the other goes down.
+
+The values of confusion matrix, on which precision and recall are based, result from the value of the threshold: you can choose a threshold which maximizes any of these measures, depending on your study. You may want the model to be:
+
+- *conservative*, i.e. predict "1" only if it is sure it is "1": then you choose high threshold and get high precision and low recall (few observations are marked as "1")
+
+- *liberal*, i.e. predict "1" when the model vaguely believes it might be "1": then you choose low threshold, get low precision and high recall (many observations are marked as "1").
+
+In other words:
+
+- precision: among those predicted as P, what percentage was truelly P?
+
+- recall: among true P, how many was predicted as P?
+
+#### - sensitivity/specificity *(pol: sensitivity - czułość, specificity - swoistość)*
+
+Let's begin with the definitions:
+
+$$ \textrm{recall} = \textrm{sensitivity} = \textrm{TPR} = \frac{\textrm{TP}}{\textrm{TP} + \textrm{FN}} $$
+
+$$ \textrm{specificity} = \textrm{TNR} = \frac{\textrm{TN}}{\textrm{TN} + \textrm{FP}} $$
+
+where TPR is True Positive Rate and TNR is True Negative Rate. These two are often used in medicine for testing if a person has a specific condition (is sick/ill) or not. Say we have a test for coronavirus:
+
+- sensitivity (TPR) 95%, meaning that among all the people who have got Covid, 95% of them are labeled "positive" by this test;
+
+- specificity 90%, meaning that among all the people who have *not* got Covid, 90% are labeled "negative".
+
+Similarily to precision and recall, while creating a model you have to choose between high sensitivity and high specificity.
+
+### c) ROC, AUC 
+
+TODO
 
 - [another good article](https://towardsdatascience.com/beyond-accuracy-precision-and-recall-3da06bea9f6c)
 
@@ -137,12 +200,15 @@ plot_roc_get_auc(
 
 ```
 
+### cross-validation 
+
+TODO
+
 
 https://towardsdatascience.com/supervised-machine-learning-model-validation-a-step-by-step-approach-771109ae0253
 
 ROC - TPR vs FPR, where
 
-$$ \textrm{TPR} = \frac{\textrm{TP}}{\textrm{TP} + \textrm{FP}} $$
 
 TPR - True Positive Rate
 TP - True Positive
