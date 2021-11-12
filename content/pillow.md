@@ -95,3 +95,99 @@ with Image.open("image.jpg") as im:
 ```
 
 More about drawing you fill find in [pillow docs](https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html).
+
+### c) heatmap
+
+Heatmap is in many cases a visual representation of a matrix. The higher the values of the matrix, the brighter the color, but you can also use different scales, e.g. when presenting temperature data, cold may be in blue, hot in red, and average in white.
+
+In case of `pillow` there is no dedicated function to draw heatmaps, as it is e.g. in matplotlib, but you can easily create one, which draws a separate point for each value of the matrix on an empty canvas.
+
+First, let's create a matrix. I will use a famous visual representation of [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), which is a fascinating mathematical, well, miracle. 
+
+>If you want to dive deeper into things like *Mandelbrot set*, I highly recommend *Chaos* by James Gleick, which shortly explains how we can/should approach the fact, that 4 lines of simple code in Python can lead to infinite chaos and beauty.
+
+
+```{python}
+import numpy as np
+
+
+def define_frame(coords, resolution):
+    re = np.linspace(coords[0][0], coords[0][1], resolution)
+    im = np.linspace(coords[1][0] * 1j, coords[1][1] * 1j, resolution)
+    x = re + im.reshape(1, -1).T
+    return x
+
+
+def mandelbrot(x):
+    z = x ** 2 + x
+    for _ in range(100):
+        z = (z ** 2) + x
+    return np.isnan(np.abs(z))
+
+
+x = define_frame([(-2, 1), (-1.5, 1.5)], 1000)
+man = mandelbrot(x)
+```
+
+And the pillow plotting function (brighter colors represent higher values, except for zeroes, which are black):
+
+```{python}
+from IPython.display import display
+from PIL import Image, ImageDraw
+
+with Image.new("RGB", man.shape, "black") as im:
+    draw = ImageDraw.Draw(im)
+    # draw point takes coords as a list of tuples
+    points = list(map(tuple, np.array(np.where(man))[::-1].T))
+    draw.point(points, fill="white")
+    display(im)
+```
+
+<img src="/pillow/black_white_pillow.png" style="width: 100%;"/>
+
+Of course you can also do this easily with matplotlib:
+
+```{python}
+import matplotlib.pyplot as plt
+plt.imshow(man, cmap="hot", interpolation="nearest")
+```
+
+<img src="/pillow/black_white_matplotlib.png" style="width: 100%;"/>
+
+But we can go fancier with mandelbrot and add a parameter, which tells us... well, I'm not going to explain here how the Mandelbrot set is created (even though is is surprisingly simple. IMHO, this simplicity is the most disturbing), let's just say that we add "temperature" to the plot.
+
+```{python}
+def mandelbrot_color(x):
+    z = x ** 2 + x
+    scores = np.zeros(x.shape)
+    for n in range(100):
+        z = (z ** 2) + x
+        scores[(np.isnan(np.abs(z))) & (scores == 0)] = n
+    return scores
+
+
+man_color = mandelbrot_color(x)
+
+with Image.new("RGB", man_color.shape) as im:
+    draw = ImageDraw.Draw(im)
+    # draw point takes coords as a list of tuples
+    scale = np.max(man_color)
+    n = len(man_color)
+    for i in range(n):
+        for j in range(n):
+            c = int(man_color[i,j] / scale * 255)
+            # in RGB we give values to green and blue
+            draw.point((j, i), fill=(0, c, c))  
+    display(im)
+```
+
+<img src="/pillow/color_pillow.png" style="width: 100%;"/>
+
+And one can do this with matplotlib as well:
+
+```{python}
+import matplotlib.pyplot as plt
+plt.imshow(man_color, cmap="hot", interpolation="nearest")
+```
+
+<img src="/pillow/color_matplotlib.png" style="width: 100%;"/>
