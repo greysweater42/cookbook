@@ -79,7 +79,7 @@ Same result as before.
 
 ### c) using pytorch
 
-Pytorch, being a framework for artifical neural networks, contains a function called *convolution*. Let's see how it works:
+Pytorch, being a framework for artifical neural networks, has a function called *convolution*. Let's see how it works:
 
 ```{python}
 import torch
@@ -103,7 +103,7 @@ In this case we had to `unsqueeze` (add a dimension) to our function/array sever
 
 Curiously, the results are slighlty different for pytorch, comparing to e.g. numpy: it turns out that pytorch uses cross-correlation instead of convolution, which in fact makes no difference, as they are almost exaclty the same transformations ([just have a look at Wikipedia](https://en.wikipedia.org/wiki/Cross-correlation#Properties)). A small discussion about this you may find also on [stackoverflow](https://stackoverflow.com/questions/66640802/why-are-pytorch-convolutions-implemented-as-cross-correlations).
 
-## 4. What are the differences between convolutional and fully-connected layers?
+## 4. Differences between convolutional and fully-connected layers
 
 The answer I would have given before deep diving into convolutions:
 
@@ -123,7 +123,7 @@ This also does not have to be case. You can set the number of kernels to 1, whic
 
 *Completely* is a subjective term, they just are different, yet they share some similarities. In fact we could understand convolution as a specific, selective and iterative kind of matrix multiplication. There are other differences, but IMHO considering a convolution as a remote relative of matrix multiplication is an interesting point of view, which is worth exploring.
 
-## 5. What are some quirks in CNNs, which are unpresent in other types of networks?
+## 5. Quirks in CNNs
 
 - stride and padding
 
@@ -134,3 +134,66 @@ This also does not have to be case. You can set the number of kernels to 1, whic
 - XAI works quite well, especially [grad-cam](https://greysweater42.github.io/fiat_ferrari/#6-but-does-it-really-work)
 
 - regularization - data augmentation and dropout (should dropout be used for CNNs?)
+
+## 6. Transposed convolution and upsampling
+
+If you work on image segmentation, you surely come across the idea of "upsampling* or *transposed convolution*. In short, image segmentation relies on a concept of encoding (downsampling) an image into a lower dimension and bringing it back to the initial size with decoding (upsampling) to predict a mask (an image where each pixel belongs to a class, usually reflected in color). Downsampling is usually done with *pooling* or convolution with *stride*. Both of these methods have the same effect: they chose every second (for stride=2 or maxpool_size=2) pixel from feature map.
+
+Let's have a look at a modest prove (proving by showing an example is *not* a proving...) ok, let's show an example which *shows* that `stride` is the same think as taking every n-th element of a tensor:
+
+```{python}
+import torch
+import torch.nn as nn
+
+# unsqueeze(0) n times
+u = lambda x, n=3: u(x.unsqueeze(0), n-1) if n > 0 else x
+
+f = torch.zeros(12)
+f[8] = 1
+f[9] = -1
+g = torch.tensor([0.0, 1.0, -1.0, 0.0])
+
+kwargs = dict(in_channels=1, out_channels=1, kernel_size=(1, 4), bias=False)
+conv1 = torch.nn.Conv1d(**kwargs)  # stride 1
+conv1.weight = torch.nn.Parameter(u(g))
+conv2 = torch.nn.Conv1d(**kwargs, stride=2)  # stride 2
+conv2.weight = torch.nn.Parameter(u(g))
+
+print(all(conv1(u(f))[0][0][0][::2] == conv2(u(f))[0][0][0]))  # the same
+```
+```
+True
+```
+
+>I used a recurrent unsqueezer, as the only way I found to avoid writing `unsqueeze(0).unsqueeze(0).unsqueeze(0)`. Theoretically you can use `view()`, but it works slighlty differently for 2D tensors, so I tend to avoid it (similar to `resize` as a transformer in torchvision and `torch.reshape` - may seem like distant relatives, but are used in completely different contexts).
+
+Now that we've recollected how downsampling works in CNNs, let's move back to upsampling. There are two popular ways to perform upsampling in pytorch. The easy way:
+
+```{python}
+print(conv2(u(f)))  # downsampled
+upsample = torch.nn.Upsample(scale_factor=(1, 2))
+print(upsample(conv2(u(f))))  # back to the previous dimensions
+```
+```
+tensor([[[[ 0.,  0.,  0., -1., -1.]]]], grad_fn=<ThnnConv2DBackward0>)
+tensor([[[[ 0.,  0.,  0.,  0.,  0.,  0., -1., -1., -1., -1.]]]],
+       grad_fn=<UpsampleNearest2DBackward1>)
+```
+
+The `Upsample` module can take various parameters depending on how you want the data to be upsampled. The default way presented above simply repeats the value `scale_factor` n times, just as numpy's `np.reapeat` function. More on that in [pytorch docs](https://pytorch.org/docs/stable/generated/torch.nn.Upsample.html).
+
+But there is a smarter, learnable approach to upsampling: you can actually use a specific kernel just as if you were doing an operation inverse to convolution (which, mathematically speaking, is not strictly *inverse*).
+
+```{python}
+convtrans = torch.nn.ConvTranspose1d(**kwargs, stride=2)
+convtrans.weight.data = u(g)
+print(convtrans(conv2(u(f))).shape == u(f).shape)  # the same shapes after unpooling/upsampling
+print(convtrans(conv2(u(f))))
+```
+```
+True
+tensor([[[[ 0.,  0.,  0.,  0.,  0.,  0.,  0., -1.,  1., -1.,  1.,  0.]]]],
+       grad_fn=<SlowConvTranspose2DBackward0>)
+```
+
+As you can see, transposed convolution restores the initial size of the tensor, but the tensor has different values, so the operation is not fully *inverse* (probably there is a way to inverse the kernel properly, but haven't figured it out yet).
