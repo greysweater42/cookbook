@@ -126,6 +126,7 @@ criterion = nn.CrossEntropyLoss()
 
 for i in range(5):
     print(f"Epoch number: {i}")
+    # keep in mind this unpacking works only for batch_size > 1
     for idx, (inputs, labels) in enumerate(train_loader):
         if not idx % 5:
             print(idx)
@@ -171,4 +172,15 @@ print(confusion_matrix(np.concatenate(trues), np.concatenate(preds)))
 - My favourite book on Pytorch is by now [Programming PyTorch for Deep Learning](https://www.amazon.com/Programming-PyTorch-Deep-Learning-Applications/dp/1492045357)
 
 - and a legendary book by Ian Goodfellow: [Deep Learning (Adaptive Computation and Machine Learning series)](https://www.amazon.com/Deep-Learning-NONE-Ian-Goodfellow-ebook/dp/B01MRVFGX4), which concentrates mostly on mathematical side of neural networks and (I think) does not even mention Pytorch at all. Worth reading, in any case. Knowing pytorch is useless unless you understand neural networks well.
+
+
+## 4. Subjects still to cover
+
+- data augmentation (TODO)
+
+- There are two types of transfer learning: feature extraction and fine-tuning, and this blog post could use descriptions of them both (TODO).
+
+- transfer learning: on which dataset is ResNet50 pretrained? TODO
+
+- transfer learning: how about a simple example of freezing some layers? TODO
 
