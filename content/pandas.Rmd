@@ -2,146 +2,184 @@
 title: "pandas"
 date: 2019-01-25T13:46:12+01:00
 draft: false
-categories: ["Python", "Data engineering", "scratchpad"]
+categories: ["Python", "Data engineering"]
 ---
 
-<div align="center">
-<h2>This is not a proper blog post yet, just my notes.</h2>
-</div><\br><\br><\br><\br>
+
+## 1. What is `pandas` and why would you use it?
+
+* `pandas` is probably your first choice for working with tabular data in Python. True, there is also [datatable](https://datatable.readthedocs.io/en/latest/), but it's nowhere near as popular as pandas.
+
+* Effectively it is the only reasonable Python package for this purpose, which makes Python a little modest comparing to R (base, data.table, dplyr - every one of them has a better interface than pandas) for table processing.
+
+Personally I find `pandas` a tool that:
+
+- makes any task moderately-simple. This may be an advantage for difficult tasks, but for everyday use is slightly frustrating.
+
+- has weird defaults, e.g.:
+
+    - `write_csv` has `index=True` by default. Who would want that? Especially that `read_csv` does not read the column `index` as index.
+
+    - `groupby` has `as_index=True` by default, which creates MultiIndexes, which seem to be completely useless (or is it just me who doesn't use them?)
+
+Even though I use pandas almost every day, there are certain solutions that I constantly forget about. Here's this short blog post with useful snippets.
 
 
-# 1. What is `pandas` and why would you use it?
+## 2. Snippets
 
-* `pandas` is a Python package created for working with tables known as `DataFrame`s;
+### datetime
 
-* it is the only reasonable Python package for this purpose, which makes Python a little modest comparing to R (base, data.table, dplyr - every one of them has a better interface than pandas) when we process tables;
-
-Even though I use pandas almost every day, there are certain solutions that I constantly forget about.
-
-
-# 2. Examples
-
-One of the simplest, yet powerful interfaces to work with tables has SQL, so I will describe `pandas`' equivalents to SQL's functions.
-
-But first let's prepare a dataset:
+Let's work on a simple dataframe:
 
 ```{python, engine.path = '/usr/bin/python3'}
 import pandas as pd
-import re
-from sklearn.datasets import load_iris
-import matplotlib.pyplot as plt
-import numpy as np
 
-
-def prepare_iris_as_in_r():
-    iris_raw = load_iris()
-    colnames = [re.sub(' ', '_', re.sub(' \(cm\)', '', x))
-                for x in iris_raw.feature_names]
-    iris = pd.DataFrame(iris_raw.data, columns=colnames)
-    species = pd.DataFrame({'species_index': range(3),
-                            'species': iris_raw.target_names})
-    iris['species_index'] = iris_raw.target
-    iris = pd.merge(iris, species, on='species_index')
-    iris.drop('species_index', axis=1, inplace=True)
-    return iris
+df = pd.DataFrame(dict(event_id=[1, 2], time=["2020-01-01 12:00", "2020-01-02 12:00"]))
+print(df)
+print(df.info())
 ```
 
-We've been working on this dataset in almost every post I wrote for this blog. It's rather small and simple, so we will not take advantage of `pandas`'s processing efficiency.
+The first thing that you should do is converting the string in to datetime:
 
 ```{python, engine.path = '/usr/bin/python3'}
-iris = prepare_iris_as_in_r()
+df["time"] = pd.to_datetime(df["time"])
+print(df)
+print(df.info())
 ```
 
-## reading data from a file
-
-In our examples we will not be doing this, because we have already loeaded the data from `sklearn`. You can do it with:
-
-```{python, engine.path = '/usr/bin/python3', eval = FALSE}
-data = pd.read_csv()
-```
-
->Don't name your datasets `data`. Everything we work on is data, so this name conveys no information. I named our dataset that way for the same reason as in most tutorials the default password is "password".
-
-useful parameters:
-
-* `sep`
-
-* `delimiter`
-
-* `header`
-
-Parameters are rather self-explanatory. And yes, I know that in SQL we don't read files ;)
-
-## WHERE filtering
-
-The easiest way to filter a `DataFrame` is by using:
-
-```
-iris[iris.species == "setosa"].head()
-iris[~iris.sepal_length.isna()].head()
-```
-
-# SELECT 2 selecting
+which provides interesting methods available with `.dt`
 
 ```{python, engine.path = '/usr/bin/python3'}
-iris[['species', 'sepal_width']]
+print(df["time"].dt.date)
+print(df["time"].dt.year)
 ```
 
-# proper ways of selection + filtering
-
-# `loc` - you may use ranges as well as names
-```{python, engine.path = '/usr/bin/python3'}
-iris.loc[:10, ['species', 'sepal_length']]
-```
-
-# `iloc` - you can use unly ranges
-```{python, engine.path = '/usr/bin/python3'}
-iris.iloc[:10, :3]
-```
-
-# GROUP BY 3 aggregating
+`to_datetime` creates objects of type `pandas.Timestamp`, which have interesting methods described in [pandas docs](https://pandas.pydata.org/docs/reference/api/pandas.Timestamp.html), like `replace`:
 
 ```{python, engine.path = '/usr/bin/python3'}
-iris.groupby('species').agg({'sepal_length': sum, 'petal_length': np.median})
+print(type(df["time"][0]))
+new_times = df["time"].map(lambda x: x.replace(month=2, year=2021))
+print(new_times)
 ```
 
-```
-pd.DataFrame({'count' : df1.groupby( [ "Name", "City"] ).size()}).reset_index()
-```
-
-# JOIN 4 joining
-
-# plotting
+Filtering is rather straightforward:
 
 ```{python, engine.path = '/usr/bin/python3'}
-iris.groupby('species').size().plot.bar()
-plt.show()
+print(df["time"] > "2020-01-02 00:01")
+# but if you want to be meticulous, you can do it with
+print(df["time"] > pd.Timestamp(2020, 1, 2, 0, 1))
 ```
 
-# ordering
+To sum up: you should convert your datetime strings to `pandas.Timestamp` with `pd.to_datetime`. Since then you have two possible types of operations:
 
-# pivot table
+- using `.dt` property, which may be useful for filtering,
 
-# indexes, or Series vs. DataFrame
+- using `.map` and `lambda` for manipulating `pd.Timestamp` objects one by one.
 
-You may have noticed that pandas uses indexes extensively, which may be not very intuitive if you come with R or SQL background (especially that index in pandas is means something different than in SQL, which *is* misleading).  In general the easiest way to cope with their problematic nature is trying to avoid them.
 
-```{python, engine.path = '/usr/bin/python3'}
-plt.scatter(iris.sepal_length, iris.sepal_width)
-```
+### grouping and aggregation
 
-# TODO
+or a task that you would expect should be easy enough, yet in pandas it is not.
+
+Let's define a simple dataframe...
 
 ```{python, engine.path = '/usr/bin/python3'}
 import numpy as np
-col1 = list('abcdefghij')
-start_date = pd.date_range(pd.datetime.today(), periods=10).tolist()
-end_date = pd.date_range(pd.datetime.today(), periods=10).tolist()
+import pandas as pd
 
-df = pd.DataFrame(dict(col1=col1, start_date=start_date, end_date=end_date))
-
-df.melt(id_vars='col1', 
-        value_vars=['start_date', 'end_date'],
-        var_name='is_start_end',
-        value_name='date')
+df = pd.DataFrame({
+    "event_id": [1, 1, 2, 2, 2],
+    "result": [12, 10, 15, 11, np.nan],
+    "comment": ["good", "bad", "good", "good", "bad"]
+})
+print(df)
 ```
+
+...and group it by the column "event_id":
+
+```{python, engine.path = '/usr/bin/python3'}
+grouped = df.groupby("event_id")
+print(type(grouped))
+```
+
+The resulting object is of type `DataFrameGroupBy` and has an interesting property: we can iterate over it:
+
+```{python, engine.path = '/usr/bin/python3'}
+for g in grouped:
+    print(g)
+```
+
+Interestingly, each item is a tuple of `(id, df_sub)`, where `id` is the name of the column, by which we group, and `df_sub` is a subset of `df`, where `df[df.id == i]` and `i` is one of `set(df["id"])`. For many grouping columns though, the things get even more interesting: 
+```{python, engine.path = '/usr/bin/python3'}
+grouped = df.groupby(["event_id", "comment"])
+for (event_id, comment), df_sub in grouped:
+    print(f"df for event_id: {event_id} and comment: {comment}:")
+    print(df_sub, "\n")
+```
+
+It seems that grouping only divides the dataset into subsets based on the argument `by` of the function.
+
+But there is one minor issue with grouping: I often get frustrated with multiindexes, so I use `as_index=False`
+```{python, engine.path = '/usr/bin/python3'}
+grouped = df.groupby(["event_id", "comment"], as_index=False)
+for (event_id, comment), df_sub in grouped:
+    print(f"df for event_id: {event_id} and comment: {comment}:")
+    print(df_sub, "\n")
+```
+
+that's better.
+
+When the data is grouped, we can easily obtain sizes/counts of each group. Counting can be done just like that:
+```{python, engine.path = '/usr/bin/python3'}
+print(grouped.size(), "\n")
+print(grouped.count(), "\n")  # excludes missing values - result for event 2 has count = 2
+print(df.count(), "\n")  # count() works also for the whole df
+```
+
+### aggregating
+
+`.agg` may be used for a dataframe or a groupby object. Here are some examples for a dataframe:
+
+```{python, engine.path = '/usr/bin/python3'}
+print(df.agg(min), "\n")
+print(df.agg([min, max, 'mean', np.std]), "\n")
+print(df.agg({'event_id': ['max', 'mean'], 'result': 'std'}), "\n")  # some funny formatting, different to the one returned by groupby.agg
+```
+
+and for grouped data
+
+```{python, engine.path = '/usr/bin/python3'}
+grouped = df.groupby(["event_id", "comment"])
+print(grouped.agg(min), "\n")
+print(grouped.agg([min, max, 'mean', np.std]), "\n")
+# useful for grouping many columns
+print(grouped.agg({'result': [min, max, 'mean', np.std]}), "\n")
+```
+
+As you can see, we obtained multiindexes in rows, which are IMHO redundant (they could be columns). Unfortunately `as_index=False` stops working when aggregating, but we can use .reset_index() instead.
+
+```{python, engine.path = '/usr/bin/python3'}
+grouped = df.groupby(["event_id", "comment"])
+print(grouped.agg({'result': [min, 'mean', np.std]}), "\n")
+```
+
+Besides, for many metrics we get a multicolumn index, which may be problematic, so it is a good idea to flatten it:
+
+```{python, engine.path = '/usr/bin/python3'}
+res = grouped.agg([min, max, 'mean', np.std]).reset_index()
+res.columns = ["_".join(x) for x in res.columns.values]
+print(res)
+```
+
+Lat but not least, you .agg can takes as arguments functions in various forms:
+
+```{python, engine.path = '/usr/bin/python3'}
+def mad(x):
+    """ mean absolut deviation of vector x """
+    return np.sum(np.abs(x - np.median(x))) / len(x)
+
+functions = [min, 'max', 'std', np.median, lambda x: np.std(x) / np.mean(x), mad]
+print(grouped.agg({'result': functions}))
+```
+
+To sum up, grouping and aggregating works a little like list comprehensions (do sth for each item) or map-reduce: `groupby` divides the dataset into items, and `agg` runs a function on each of the items.
