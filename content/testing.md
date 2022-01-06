@@ -2,17 +2,14 @@
 title: "testing"
 date: 2018-02-04T12:02:23+01:00
 draft: false
-categories: ["DevOps", "Data engineering", "R", "Python"]
-tags: ["DevOps", "Data engineering", "R", "Python"]
+categories: ["R", "Python"]
 ---
 
-## 1. What is testing and why would you use it? 
+## 1. What is testing and why would you do it? 
 
-* testing or [test-driven development](https://en.wikipedia.org/wiki/Test-driven_development) (TDD) is a discipline, which relies on writing a test for every functionality *before* creating it;
+* testing or [test-driven development](https://en.wikipedia.org/wiki/Test-driven_development) (TDD) is a discipline, which relies on writing a test for every functionality *before* creating it (in reality you often end up writing tests afterwards)
 
-* at first the test will fail, as we have not provided the proper functionality yet. Our goal is to fulfill this functionality, so the test will pass.
-
-In reality you modify your tests as you create the functionality or even write the tests after you are finished writing it. It's OK as long as you remember to cover all the functions with tests.
+* at first the test will fail, as we have not provided the proper functionality yet. Our goal is to fulfill this functionality, so the test will pass (in reality you usually write tests so that later you can code more... inattentively, and tests point out your mistakes before reaching pruduction environment)
 
 ## 2. "Hello World" examples 
 
@@ -66,9 +63,9 @@ What have we done here?
 
 * we provided a context - this is the first message that appears in tests summary and serves as a title for this particular group of tests;
 
-*Couriously, in order to run test properly, you *have to* provide context [link](https://stackoverflow.com/questions/50083521/error-in-xmethod-attempt-to-apply-non-function-in-testthat-test-when)*.
+*Couriously, in order to run test properly, [you *have to* provide context](https://stackoverflow.com/questions/50083521/error-in-xmethod-attempt-to-apply-non-function-in-testthat-test-when)*.
 
-* we wrote a function `divider`, which divides two numbers and `summer`, which adds twwo numbers (clever!); as you can see, there is a strange bug in `summer`
+* we wrote a function `divider`, which divides two numbers and `summer`, which adds two numbers (clever!); as you can see, there is a strange bug in `summer`
 
 * `test_that` functions belong to `testthat` package and they will check if these functions run properly;
 
@@ -102,7 +99,7 @@ Warnings: 0
 Skipped:  0
 ```
 
-Information, that 4 tests have passed, one has failed. The one that failes was in 37th line of the test file, when we were 'checking proper summing by summer'. According to `summer` two and three is not five.
+As we can see, 4 tests have passed, one has failed. The one that failed was in 37th line of the test file, when we were 'checking proper summing by summer'. According to `summer`, two and three is not five `¯\_(ツ)_/¯`.
 
 ### Python (pytest) 
 
@@ -145,7 +142,7 @@ test_divider.py .                                                             [1
 
 that the test passed. If you want to receive more specific information, use the verbose flag: `pytest -v`.
 
-What happens if the test failes? Let's write another test, which will clearly cause an error:
+What happens if the test fails? Let's write another test, which will clearly cause an error:
 
 test_divider.py
 ```
@@ -191,6 +188,11 @@ func.py:2: ZeroDivisionError
 
 As we can see, dividing by zero raises a ZeroDivisionError.
 
+### Python testing extensions
+
+- **fixtures** are used to extract a common, integral and independent part of many test functions to a separate object. This can be e.g. a database connection or a csv file or, in fact, any object.
+
+- **mocking** - its name is quite self-explanatory: it substitutes a function/method/object from e.g. a separate package with the one provided by us. May be used for mocking database connections, http requests, reading csv files - virtually any I/O operation, or if we test a method, which uses other methods of a class: we can mock the other methods, as they are tested separately. But beware! Never change the behavior and tests of the other methods! Actually you should never change the tests anyway.
 
 ## 3. Useful links 
 
@@ -206,6 +208,8 @@ As we can see, dividing by zero raises a ZeroDivisionError.
 
     * [Probably the best book with snippets and "Hello World" examples: The Hitchhiker's Guide to Python](https://docs.python-guide.org/writing/tests/)
 
-## 4. Subjects still to cover 
+    * [last but not least - excellent Pytest's docs](https://docs.pytest.org/en/6.2.x/contents.html)
+
+## 4. Subjects still to cover in this blogpost
 
 * unittest, coverage (TODO)
