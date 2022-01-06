@@ -38,7 +38,7 @@ But what kind of nonlinear function should we use? One of the most popular nonli
 $$ f(\textrm{year}) = \frac{\theta_1}{1 + e^{-(\theta_2 + \theta_3 * \textrm{year})}} $$
 
 
-Before we'll move to the estimation of the parameters, let's calculate starting values for minimisation (least squares) algorithm. A natural candidate would be coefficients of a linear regression, where our dependant variable is linearised with a `logit()` function. Note that is the linearised model we will not extimate the Intercept, as we scale the dependant variable by diving all the values by a little more than it's maximum, so that $\textrm{population}\in(0,1)$. Our estimation of the Intercept is this maximum value that we divided by.
+Before we'll move to the estimation of the parameters, let's calculate starting values for minimisation (least squares) algorithm. Natural candidates would be coefficients of linear regression, where our dependent variable is linearised with a `logit()` function. Note that in this linearised model we will not estimate the `Intercept`, as we scale the dependent variable by diving all the values by a little more than it's maximum, so that $\textrm{population}\in(0,1)$. Our estimation of the `Intercept` is this maximum value that we divided by.
 ```{r}
 t1 <- max(USPop$population) * 1.05
 model_start <- lm(car::logit(population / t1) ~ year, USPop)
@@ -47,14 +47,14 @@ names(starts) <- c("theta1", "theta2", "theta3")
 print(starts)
 ```
 
-Let's estimate the model coefficients using `nls()` function.
+Having the starting values for parameters ready, we can move on to using the `nls` function, which will calculate the final parameters.
 ```{r}
 form <- population ~ theta1  / (1 + exp(-(theta2 + theta3 * year)))
 model <- nls(formula = form, data = USPop, start = starts)
 print(model)
 ```
 
-As we can observe, the estimated parameters' values do not differ much from starting values.
+As we can see, the estimated parameters values do not differ much from starting values. Which was rather expected.
 
 The plot below presents a much better fit of a model with logistic function, comparing to linear regression.
 
@@ -69,4 +69,4 @@ lines(fitted_values ~ year, data = USPop, col = "blue", lwd = 2)
 
 * using `nls()` in fact does not differ much from using standard `ls()`;
 
-* we can use any function, not only logistic regerssion.
+* to solve nonlinear problems with `nls`, we can use any function, not only logistic regerssion.
