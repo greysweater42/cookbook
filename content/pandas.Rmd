@@ -183,3 +183,31 @@ print(grouped.agg({'result': functions}))
 ```
 
 To sum up, grouping and aggregating works a little like list comprehensions (do sth for each item) or map-reduce: `groupby` divides the dataset into items, and `agg` runs a function on each of the items.
+
+## 3. Other interesting commands/arguments:
+
+- [select_dtypes](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.select_dtypes.html): `df.select_dtypes(include="object")` or `df.select_dtypes(exlude="object")` chooses onlt those columns, which fulfils criterium
+- [rename](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename.html): `df.rename(columns={"current_name": "new_name", ...})` - instead of saying `rename(..., axis=1)`, you can say `df.rename(columns={...})`, which is a little bit more readable
+` 
+- [categorical data](https://pandas.pydata.org/docs/user_guide/categorical.html): `df['some_class'].astype('category')` - keeping categorial data as `category` type is more memory-efficient, as values are stored as integers, and their names ar stored in something similar to a `dict`
+
+- [replace - not str.replace](https://pandas.pydata.org/docs/reference/api/pandas.Series.replace.html): `series.replace('other', 'unknown')` - exact synonym to `series.loc[series == "other"] = "unknown"`, but shorter, and you can also use regex like this: `pd.Series(["ab", "ac", "bc"]).replace("a.*", "zz", regex=True)`, which replaces `ab` and `ac` with `zz`
+
+- [str.get()](https://pandas.pydata.org/docs/reference/api/pandas.Series.str.get.html): `series.str.get(-1)` - gets the last element of an itarable object, which is *in* the series: if it is a string - takes the last letter, if a list/tuple - the last element of that list/tuple
+
+- [str.split](https://pandas.pydata.org/docs/reference/api/pandas.Series.str.split.html): `series.str.split('_', n=2, expand=True)` - this command splits the strings by underscore, but only to the second (`n=2`) occurence of underscore, and `expand`s the result into several (in this case: 3) columns. An interesting variation of `expand` is `explode`: `series.explode()`, which converts a series of lists into a series by concatenating lists, so the result is a series, in opposite to `str.split(..., expand=True)`, where the result is a dataframe
+
+- [str.replace](https://pandas.pydata.org/docs/reference/api/pandas.Series.str.replace.html): `series.str.replace("a.*", "zz", regex=True)` - replace everything that starts with `a` with `zz`; `regex=True` is mandatory in order to use regex
+
+- [str.match](https://pandas.pydata.org/docs/reference/api/pandas.Series.str.match.html): `series.str.match("a.*")` - marks all the values that start with `a` as True, the rest is False. In contrast to `str.replace`, `str.match` uses rregex by default
+
+- [nlargest](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.nlargest.html): `df.nlargest(5, columns="class1")` - returns 5 rows with the largest values of class1
+
+- [read_csv](https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html): `pd.read_csv` has milions of parameters, but one of them is particularily interesting: `pd.read_csv(..., dtype={"col1": int})`, which automatically reads the data in a proper format. This can be useful if you don't vae an ORM to store information on data types, yet you want the columns to have proper dtypes, even if the whole column is empty (which may happen if you download data from spark)
+
+- axis: it is possible to write `axis=0` or `axis=1`, but `axis="rows"` and `axis="columns"` are much more readable
+
+
+## 4. References
+
+I highly recommend this book: [Pandas in action](https://www.manning.com/books/pandas-in-action), to all the readers.
