@@ -3,51 +3,48 @@ title: "airflow"
 date: 2018-08-14T11:51:12+02:00
 draft: false
 categories: ["Python", "Data engineering"]
-output: 
-  html_fragment:
-    self_contained: false
 ---
 
 ## 1. What is airflow and why would you use it?
 
-* airflow lets you manage your dataflow as a graph (direct acyclic graph or DAG), wchich consists of separate Tasks, and schedule them
+* airflow manages dataflow as a graph (direct acyclic graph or *DAG*), which consists of separate tasks, and schedule them
 
 > *Wait*, you may say, *I can do that with cron!*
 
 Yes, you can, but with airflow:
 
-* you can easily divide your app into smaller tasks and monitor their reliability and execution duration;
+* airflow implements a well-known `pipeline` design pattern with *DAG*s, which are data engineer's workhorses
 
-* the performance is more transparent;
+* you can easily divide your app into smaller tasks and monitor their reliability and execution duration
 
-* simple rerunning;
+* the performance is more transparent
 
-* simple alerting with emails;
+* simple rerunning
 
-* as the pipelines' definitions are kept in code, you can generate them, or even let the user do it;
+* simple alerting with emails
 
-* you can (and should!) keep your pipelines' code in a git repository;
+* as the pipelines' definitions are kept in code, you can generate them, or even let the user do it
 
-* you keep the logs in one place. Unless you use ELK stack, then you don't use this functionality;
+* you can (and should!) keep your pipelines' code in a git repository
 
-* integration with [mesos](http://tomis9.com/mesos), which I never used, but you can.
+* you keep the logs in one place (unless you have some central log repository in your company implemented using e.g. ELK)
 
-Convinced? ;)
 
 ## 2. Installation and startup
 
-```{bash, eval = FALSE}
-pip install airflow
-```
+Installation in straightforward:
 
-Not very complicated.
+```bash
+pip install apache-airflow
+```
 
 Then run airflow scheduler and webservice with:
 
-```{bash, eval = FALSE}
+```bash
 airflow scheduler
-airflow webservice
+airflow webserver
 ```
+airflow users  create --role Admin --username admin --email admin --firstname admin --lastname admin --password admin
 
 ## 3. Best practises
 
@@ -55,17 +52,17 @@ airflow webservice
 
 You may feel tempted to create a git repository in your DAG folder, however this is not the best solution. It's much easier and more logical to keep your DAG file in a repo where your project lives and softlink it with
 
-```{bash, eval = FALSE}
+```bash
 ln -s /path-to-your-project-repo/my_project_dag.py /home/me/airflow/dags/
 ```
 
 ### DAG names and DAG file names
 
-* keep only one DAG in a file;
+* keep only one DAG in a file
 
-* DAG should have the same name as the file it's in;
+* DAG should have the same name as the file it's in
 
-* DAG's and file's name should begin with project's name.
+* DAG's and file's name should begin with project's name
 
 ### Jinja templating
 
