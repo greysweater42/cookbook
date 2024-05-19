@@ -156,6 +156,42 @@ create_table = bq.BigQueryCreateExternalTableOperator(
 
 - Airflow has a declarative vibe, i.e. it appears you might define this DAG in a yaml file. There even is a [package which provides such a functionality](https://github.com/rambler-digital-solutions/airflow-declarative).
 
+## Reading data from BigQuery
+
+You can check if processing ended successfully in airflow GUI, but you might also want to query the data. There are many ways to do that, e.g. using GCP Console, GCP's CLI (`bq`) or from Python:
+
+```Python
+from google.cloud import bigquery
+
+client = bigquery.Client()
+
+# Perform a query.
+QUERY = """
+    SELECT * FROM `bigquery-tutorial-xxxxxx.cars.cars` 
+    where make like 'Aston Martin';
+"""
+query_job = client.query(QUERY)  # API request
+rows = query_job.result()  # Waits for query to finish
+
+df = rows.to_dataframe()
+print(df)
+```
+
+*The example above was heavily insired by [BigQuery's documentation](https://cloud.google.com/bigquery/docs/samples/bigquery-query-results-dataframe).*
+
+You can also use [pandas' special function for reading from BigQuery](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_gbq.html).
+
+
+## Cleanup
+
+After the pipeline ends successfully and you reviewed the results, you might want to delete the resources that the pipeline created in GCP:
+
+```bash
+gsutil -m rm -r gs://cars-xxxxxx
+bq rm -f cars.cars
+bq rm -f cars
+```
+
 ## Resources
 
 - [airflow's official guide to BigQUery operators](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/bigquery.html)
